@@ -1,22 +1,27 @@
-import { Button } from "@/components/ui/button"
-import { Container } from "@/components/ui/container"
-import { Home } from "lucide-react"
-import { Input } from "./components/ui/input";
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import Login from './page/signIn.jsx'
+import { Dashboard } from './page/dashboard.jsx'
+import PrivateRoute from './lib/privtaeRoute.jsx'
 
-function App() {
+export default function App() {
+  const currentUser = useSelector((state) => state.user)
+
   return (
-    <Container>
-      <div className="">
-        <p>Forgot Password?</p>
-        <p>Enter your email address, and we'll send you a link to reset your password.</p>
-      </div>
-
-      <div>
-        <Input type="email" placeholder="Email" />
-        <Button className="w-full">Button</Button>
-      </div>
-    </Container>
+    <div className=''>
+        <BrowserRouter>
+          <OpenProvider>
+            <Routes>
+              <Route path='/Sign-In' element={<Login/>}/>
+              <Route element={<PrivateRoute/>}>
+                <Route element={<Layout/>}>
+                  <Route path="/" element={<Navigate to="/dashboard" replace/>}/>
+                  <Route path='/dashboard' element={<Dashboard/>}/></Route>
+              </Route>
+            </Routes>
+          </OpenProvider>
+        </BrowserRouter>
+    </div>
   )
 }
-
-export default App;
