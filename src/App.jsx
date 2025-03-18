@@ -1,22 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { Container } from "@/components/ui/container"
-import { Home } from "lucide-react"
-import { Input } from "./components/ui/input";
+import React from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import PrivateRoute from './lib/privateRoute.jsx'
 
-function App() {
+export default function App() {
+
   return (
-    <Container>
-      <div className="">
-        <p>Forgot Password?</p>
-        <p>Enter your email address, and we'll send you a link to reset your password.</p>
-      </div>
-
-      <div>
-        <Input type="email" placeholder="Email" />
-        <Button className="w-full">Button</Button>
-      </div>
-    </Container>
+    <div className=''>
+        <BrowserRouter>
+            <Routes>
+              {/* SignIn, SignUp and landing page routes will be here */}
+              <Route element={<PrivateRoute/>}>
+              {/* The layout route */}
+              {/* The routing that will be protected will be here */}
+              </Route>
+            </Routes>
+        </BrowserRouter>
+    </div>
   )
 }
-
-export default App;
