@@ -6,7 +6,7 @@ import { Container } from './components/ui/container.jsx'
 export default function App() {
 
   return (
-    <div className=''>
+    <Container>
         <BrowserRouter>
             <Routes>
               {/* SignIn, SignUp and landing page routes will be here */}
@@ -16,6 +16,6 @@ export default function App() {
               </Route>
             </Routes>
         </BrowserRouter>
-    </div>
+    </Container>
   )
 }
