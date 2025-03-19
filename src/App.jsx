@@ -3,8 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import PrivateRoute from './lib/privateRoute.jsx'
 import { Container } from './components/ui/container.jsx'
 
-export default function App() {
-
+function App() {
   return (
     <Container>
         <BrowserRouter>
@@ -19,3 +18,4 @@ export default function App() {
     </Container>
   )
 }
+export default App;
