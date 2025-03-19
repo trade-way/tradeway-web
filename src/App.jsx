@@ -1,14 +1,16 @@
-import { Button } from "@/components/ui/button"
+import React from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import PrivateRoute from './lib/privateRoute.jsx'
 import { Container } from "@/components/ui/container"
-import { Home } from "lucide-react"
-import { Input } from "./components/ui/input";
+
 
 function App() {
   return (
     <Container>
      home
     </Container>
+
+
   )
 }
-
 export default App;
