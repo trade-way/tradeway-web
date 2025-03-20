@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Link } from 'react-router-dom';
 import {
   Form,
   FormControl,
@@ -133,12 +134,18 @@ function Login() {
                       </div>
                     </FormItem>
                   )}
+
+                  
                 />
 
                 <div>
-                  <a href="#" className="text-blue-500 hover:underline text-sm">
+                  {/* <a href="/forgot-password" className="text-blue-500 hover:underline text-sm">
                     Forgot password?
-                  </a>
+                  </a> */}
+                  <Link to="/forgot-password" className="text-blue-500 hover:underline text-sm">
+                    Forgot password?
+                  </Link>
+                  
                 </div>
               </div>
 

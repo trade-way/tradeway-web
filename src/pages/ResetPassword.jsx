@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
 
-function Signup() {
+function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -248,4 +248,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ResetPassword;
