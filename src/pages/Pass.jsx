@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
 
-function Signup() {
+function Pass() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -31,18 +31,7 @@ function Signup() {
       .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
       .regex(/[0-9]/, "Password must contain at least one number"),
     rememberMe: z.boolean().default(false),
-    confirmPassword: z.string().min(8, {
-      message: "Please confirm your password.",
-    }),
-  }).refine(data => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  
   });
-
-  
-
-
 
   // Configure form with zod resolver
   const form = useForm({
@@ -77,39 +66,17 @@ function Signup() {
     <div className="flex items-center justify-end w-screen h-screen max-h-screen bg-[url(./src/assets/Group_img.png)] bg-no-repeat bg-center md:bg-left-top">
       {/* Right side - Login Form */}
       <div className="md:h-full h-4/6 absolute bottom-0 w-full md:w-1/2 bg-white rounded-t-3xl md:rounded-l-3xl flex items-center justify-center p-8">
-        <div className="w-full max-w-md mb-3">
+        <div className="w-full max-w-md">
           <div className="text-center mt-6 mb">
-            <h1 className="text-2xl font-bold ">Create an account</h1>
+            <h1 className="text-2xl font-bold">Welcome back!</h1>
             <p className="text-gray-500 font-normal">
-              Already have an account? <span className="text-blue-400"> Log in</span>
+              Log in to continue your shopping experience. Enter your
+              credentials to access your account
             </p>
           </div>
 
-          
-
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-
-            <FormField
-                control={form.control}
-                name="Username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your username"
-                        type="text"
-                        className="placeholder:leading-[1.15] placeholder:text-base"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
                 name="email"
@@ -129,33 +96,12 @@ function Signup() {
                 )}
               />
 
-              
-
-
               <FormField
                 control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="••••••••"
-                        type="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Re-enter Password</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="••••••••"
@@ -182,8 +128,7 @@ function Signup() {
                       </FormControl>
                       <div className="space-y-1 leading-none">
                         <FormLabel className="cursor-pointer">
-                        
-                          I agree to the terms &amp; conditions
+                          Remember me for 30 days
                         </FormLabel>
                       </div>
                     </FormItem>
@@ -201,15 +146,8 @@ function Signup() {
                 type="submit"
                 className="w-full bg-blue-500 hover:bg-blue-600"
               >
-                Create an account
+                Login
               </Button>
-
-              
-              <div class="flex items-center">
-                <div class="flex-grow border-t border-black"></div>
-                  <span class="mx-4 text-black-500">or Register with</span>
-                <div class="flex-grow border-t border-black"></div>
-              </div>
 
               <Button
                 type="button"
@@ -241,11 +179,16 @@ function Signup() {
             </form>
           </Form>
 
-          
+          <div className="text-center text-sm mt-6">
+            <span className="text-gray-500">Don't have an account? </span>
+            <a href="#" className="text-blue-600 hover:underline">
+              Sign up
+            </a>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default Signup;
+export default Pass;
