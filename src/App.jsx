@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Layout from "./Layout.jsx";
 
 function App() {
   return (
@@ -21,9 +22,16 @@ function App() {
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
          
+         {/* Layout component will be rendered for all the routes */}
+          <Route path="/" element={<Layout />}>
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             {/* Add protected routes inside here */}
+          </Route>
+          {/* Public Routes */}
+          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
+         
+         
           </Route>
 
           {/* 404 Page Not Found */}
