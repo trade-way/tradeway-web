@@ -8,34 +8,36 @@ import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
+import BillingDetailPage from "./pages/billingDetailPage";
 
 function App() {
   return (
     <Container>
       <BrowserRouter>
         <Routes>
-
           {/* SignIn, SignUp and landing page routes will be here */}
-          <Route path="/login" element={<Login/>} />
+          <Route path="/login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-         
-         {/* Layout component will be rendered for all the routes */}
+          <Route path="/billing" element={<BillingDetailPage />} />
+
+          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
-          {/* Protected Routes */}
-          <Route element={<PrivateRoute />}>
-            {/* Add protected routes inside here */}
-          </Route>
-          {/* Public Routes */}
-          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
-         
-         
+            {/* Protected Routes */}
+            <Route element={<PrivateRoute />}>
+              {/* Add protected routes inside here */}
+            </Route>
+            {/* Public Routes */}
+            {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
           </Route>
 
           {/* 404 Page Not Found */}
-          <Route path="*" element={<div>Page not found: {window.location.pathname}</div>} />
+          <Route
+            path="*"
+            element={<div>Page not found: {window.location.pathname}</div>}
+          />
         </Routes>
       </BrowserRouter>
     </Container>
