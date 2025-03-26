@@ -13,15 +13,14 @@ function App() {
     <Container>
       <BrowserRouter>
         <Routes>
-          {/* Redirect / to /login */}
-          <Route path="/" element={<Navigate to="/login" />} />
-          
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/pass" element={<Pass />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
 
+          {/* SignIn, SignUp and landing page routes will be here */}
+          <Route path="/login" element={<Login/>} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/Pass" element={<Pass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+         
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             {/* Add protected routes inside here */}
