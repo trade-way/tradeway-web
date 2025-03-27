@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Product from "./pages/productDetails.jsx";
 import Layout from "./Layout.jsx";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/product-details" element={<Product/>} />
          
          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
