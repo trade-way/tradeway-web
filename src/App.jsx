@@ -7,26 +7,31 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
-import Product from "./pages/productDetails.jsx";
+import Layout from "./Layout.jsx";
 
 function App() {
   return (
     <Container>
       <BrowserRouter>
         <Routes>
-          {/* Redirect / to /login */}
-          <Route path="/" element={<Navigate to="/login" />} />
-          
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/pass" element={<Pass />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/product-details" element={<Product />} />
 
+          {/* SignIn, SignUp and landing page routes will be here */}
+          <Route path="/login" element={<Login/>} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/Pass" element={<Pass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+         
+         {/* Layout component will be rendered for all the routes */}
+          <Route path="/" element={<Layout />}>
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             {/* Add protected routes inside here */}
+          </Route>
+          {/* Public Routes */}
+          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
+         
+         
           </Route>
 
           {/* 404 Page Not Found */}
