@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Product from "./pages/productDetails.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/product-details" element={<Product />} />
 
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
