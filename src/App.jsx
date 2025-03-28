@@ -8,7 +8,6 @@ import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
-import BillingDetailPage from "./pages/DeliveryDetails.jsx";
 import DeliveryDetails from "./pages/DeliveryDetails.jsx";
 
 function App() {
