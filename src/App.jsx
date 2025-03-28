@@ -22,6 +22,7 @@ function App() {
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/billing" element={<BillingDetailPage />} />
+          
 
           {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
