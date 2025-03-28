@@ -1,7 +1,7 @@
 import React from "react";
 import { Input } from "../components/ui/input";
 
-const BillingDetailPage = () => {
+const DeliveryDetails = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -83,4 +83,4 @@ const BillingDetailPage = () => {
   );
 };
 
-export default BillingDetailPage;
+export default DeliveryDetails;
