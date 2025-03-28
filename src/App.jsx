@@ -11,7 +11,7 @@ import Layout from "./Layout.jsx";
 
 function App() {
   return (
-    <Container>
+    
       <BrowserRouter>
         <Routes>
 
@@ -38,7 +38,7 @@ function App() {
           <Route path="*" element={<div>Page not found: {window.location.pathname}</div>} />
         </Routes>
       </BrowserRouter>
-    </Container>
+   
   );
 }
 
