@@ -42,8 +42,8 @@ const CartProduct = () => {
 
   return (
     <section className="mx-auto px-8 md:px-10 py-10">
-    <div className="flex justify-between flex-wrap items-start gap-4 w-full">
-        <div className="cart-container container ">
+    <div className="flex flex-row justify-between flex-wrap items-start gap-4 w-full">
+        <div className="cart-container  ">
         
         <div className="flex flex-wrap gap-2 text-xl">
             <input type="checkbox" checked={cart.every(item => item.selected)} onChange={toggleSelectAll} />
