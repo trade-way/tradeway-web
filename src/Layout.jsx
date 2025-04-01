@@ -1,19 +1,22 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { Outlet,useLocation } from "react-router-dom";
-import { Container } from './components/ui/container';
+import { Outlet, useLocation } from "react-router-dom";
 
 const Layout = () => {
   const location = useLocation();
-  const hideLayout = ["/login", "/signup"].includes(location.pathname);
+  const hideLayout = ["/login", "/signup", "/forgot-password", "/pass", "/reset-password"].includes(location.pathname);
+
+  
+
   return (
-    <Container>
-        {!hideLayout && <Navbar />}
+    <>
+      {!hideLayout && <Navbar />}
       <Outlet />
+
       {!hideLayout && <Footer />}
-    </Container>
-  )
+    </>
+  );
 }
 
-export default Layout
+export default Layout;

@@ -16,11 +16,20 @@ import { Container } from "./components/ui/container.jsx";
 
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+import ResetPassword from "./pages/ResetPassword.jsx";
+import Layout from "./Layout.jsx";
+import Cart from "./pages/Cart.jsx";
+import ProductPage from "./pages/Product.jsx";
+import Home from "./pages/Home.jsx"
+
+
+
 function App() {
   return (
-    <Container>
+    
       <BrowserRouter>
         <Routes>
+
           {/* Public Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -43,10 +52,44 @@ function App() {
 
           {/* Optional: Default redirect */}
           <Route path="/" element={<Navigate to="/login" replace />} />
+
+
+          {/* SignIn, SignUp and landing page routes will be here */}
+          <Route path="/login" element={<Login/>} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/Pass" element={<Pass />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
+          <Route path="/cart" exact element={<Cart />}></Route>
+
+         
+
+          {/* <Route path="/products/:product" element={<ProductPage/>} /> */}
+
+         {/* Layout component will be rendered for all the routes */}
+          <Route path="/" element={<Layout />}>
+          {/* Protected Routes */}
+          <Route  index  element={<Home/>} />  
+          <Route element={<PrivateRoute />}>
+            {/* Add protected routes inside here */}
+          </Route>
+          {/* Public Routes */}
+         
+         
+          </Route>
+
+          {/* 404 Page Not Found */}
+          <Route path="*" element={<div>Page not found: {window.location.pathname}</div>} />
+
         </Routes>
       </BrowserRouter>
-    </Container>
+   
   );
 }
 
+
+
+
 export default App;
+
