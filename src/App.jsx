@@ -8,8 +8,10 @@ import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
+import Cart from "./pages/Cart.jsx";
 import ProductPage from "./pages/Product.jsx";
 import Home from "./pages/Home.jsx"
+
 
 function App() {
   return (
@@ -23,7 +25,13 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+          <Route path="/cart" exact element={<Cart />}></Route>
+
+         
+
           {/* <Route path="/products/:product" element={<ProductPage/>} /> */}
+
          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
           {/* Protected Routes */}
@@ -32,7 +40,6 @@ function App() {
             {/* Add protected routes inside here */}
           </Route>
           {/* Public Routes */}
-         
          
          
           </Route>

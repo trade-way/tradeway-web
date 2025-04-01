@@ -4,6 +4,7 @@ import { Search, ChevronDown, ShoppingCart, User2Icon, UserCircle, UserCircle2Ic
 import { useState } from 'react';
 // import { Input } from "./components/ui/input";
 import { Menu } from 'lucide-react'; // Add this import
+import { Link } from 'react-router-dom';
 
 
 
@@ -96,9 +97,9 @@ const Navbar = () => {
         </ul>
         
         <div className='flex items-center gap-6'>
-          <a href="/cart">
+          <Link to="/cart">
             <ShoppingCart className='h-6 w-6' />
-          </a>
+          </Link>
           <button 
             className='relative flex items-center gap-1 hover:text-blue-700'
             onClick={handleProfileClick}
