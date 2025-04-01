@@ -8,6 +8,11 @@ import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
+<<<<<<< Updated upstream
+=======
+import ProductPage from "./pages/Product.jsx";
+import Home from "./pages/Home.jsx"
+>>>>>>> Stashed changes
 
 function App() {
   return (
@@ -25,11 +30,12 @@ function App() {
          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
           {/* Protected Routes */}
+          <Route  index  element={<Home/>} />  
           <Route element={<PrivateRoute />}>
             {/* Add protected routes inside here */}
           </Route>
           {/* Public Routes */}
-          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
+         
          
          
           </Route>
