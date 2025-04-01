@@ -19,7 +19,11 @@ const authService = {
   },
 
   register: async (userData) => {
-    return api.post(API_ENDPOINTS.authentication.register, userData);
+    const response = await api.post(
+      API_ENDPOINTS.authentication.register,
+      userData
+    );
+    return response;
   },
 
   logout: async () => {
@@ -29,6 +33,29 @@ const authService = {
     localStorage.removeItem("refresh_token");
   },
 
+  // In your authService.js file
+  verifyOTP: async (otpValue) => {
+    try {
+      const response = await api.post(API_ENDPOINTS.authentication.verifyOTP, {
+        code: otpValue, // Transform the parameter name from "otp" to "code"
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // Add this to your authService.js
+  resendOTP: async (email) => {
+    try {
+      const response = await api.post(API_ENDPOINTS.authentication.resendOTP, {
+        email: email,
+      });
+      return response.message;
+    } catch (error) {
+      throw error;
+    }
+  },
   forgotPassword: async (email) => {
     return api.post(API_ENDPOINTS.authentication.forgotPassword, { email });
   },

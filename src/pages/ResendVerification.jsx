@@ -52,17 +52,18 @@ function ResendVerification() {
 
   // Handle form submission
   async function onSubmit(values) {
-    console.log(values);
+    setLoading(true);
     try {
-      const response = await authService.login(values);
-      console.log("Login successful:", response);
-
-      // Redirect to dashboard or home page after successful login
-      navigate("/dashboard");
+      console.log("Verifying OTP:", values);
+      const response = await authService.verifyOTP(values.otp);
+      console.log("OTP verification successful:", response);
+  
+      // Redirect to reset password page after successful verification
+      navigate("/reset-password");
     } catch (err) {
-      console.error("Login failed:", err);
+      console.error("OTP verification failed:", err);
       setError(
-        err.response?.data?.message || "Login failed. Please try again."
+        err.response?.data?.message || "Verification failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -157,7 +158,7 @@ function ResendVerification() {
                     <span className="text-blue-400">Resend Verification code</span>
                 </a>
               </div>           
-                
+              
 
                 
                  

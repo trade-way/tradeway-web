@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import PrivateRoute from "./lib/privateRoute.jsx";
+// import { GoogleOAuthProvider } from '@react-oauth/google'
 
 // Auth Pages
 import Login from "@/pages/Login.jsx";
@@ -8,9 +9,12 @@ import Signup from "@/pages/Signup.jsx";
 import ForgotPassword from "@/pages/ForgotPassword.jsx";
 import ResendVerification from "@/pages/ResendVerification.jsx";
 import ResetPassword from "@/pages/ResetPassword.jsx";
+import VerifyOtp from "@/pages/VerifyOtp.jsx"
 
 // UI Components
 import { Container } from "./components/ui/container.jsx";
+
+// const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
@@ -20,6 +24,7 @@ function App() {
           {/* Public Authentication Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-otp" element={<VerifyOtp/>}  />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/resend-verification" element={<ResendVerification />} />

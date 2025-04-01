@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import {
   Form,
   FormControl,
@@ -17,7 +18,11 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
 
+// Uncomment this import if you plan to use Google authentication
+// import { GoogleLogin } from "@react-oauth/google";
+
 function Login() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -46,7 +51,8 @@ function Login() {
 
   // Handle form submission
   async function onSubmit(values) {
-    console.log(values);
+    setLoading(true);
+    setError(null);
     try {
       const response = await authService.login(values);
       console.log("Login successful:", response);
@@ -63,6 +69,42 @@ function Login() {
     }
   }
 
+  // Handle Google Sign-In Success
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      // Decode the Google credential
+      const decodedToken = jwtDecode(credentialResponse.credential);
+      
+      // Prepare Google login data
+      const googleLoginData = {
+        email: decodedToken.email,
+        name: decodedToken.name,
+        googleId: decodedToken.sub,
+      };
+
+      // Call backend Google authentication
+      // Uncomment the line below when your backend service is ready
+      // const response = await authService.googleLogin(googleLoginData);
+      
+      console.log("Google Login successful:", googleLoginData);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Google Login failed:", err);
+      setError(
+        err.response?.data?.message || "Google Login failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-In Failure
+  const handleGoogleFailure = (error) => {
+    console.error("Google Sign-In Failed:", error);
+    setError("Google Sign-In failed. Please try again.");
+  };
+
   return (
     <div className="min-h-screen relative bg-gray-100 ">
       {/* Background for visible border radius */}
@@ -71,21 +113,21 @@ function Login() {
       <div className="min-h-screen absolute inset-0 lg:grid lg:grid-cols-5">
         {/* Left Side - Image Section */}
         <div className="h-screen lg:col-span-2 relative">
-          {/* <div className="bg-[url(./src/assets/Group_img.png)] h-full w-full bg-center bg-no-repeat bg-cover bg-black object-contain"></div> */}
-          <div className="bg-[url(./src/assets/image_2.png)] h-full w-full bg-center bg-no-repeat bg-cover object-contain relative">
-            {/* Logo in top right corner - now inside the background div with relative positioning */}
+          {/* Use import.meta.url for Vite or process.env.PUBLIC_URL for Create React App */}
+          <div className="bg-[url(/src/assets/image_2.png)] h-full w-full bg-center bg-no-repeat bg-cover object-contain relative">
+            {/* Logo in top right corner */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:right-8 z-10 flex items-center">
               <img 
-                src="./src/assets/logo.png" 
+                src="/src/assets/logo.png" 
                 alt="Company Logo" 
                 className="w-auto h-8 sm:h-10 lg:h-10"
               /> 
-              <span class=" m-1 md:text-base font-bold text-white lg:text-lg   font-poppins">
-                 Logo
+              <span className="m-1 md:text-base font-bold text-white lg:text-lg font-poppins">
+                Logo
               </span>
             </div>
 
-             {/* New text in bottom left corner */}
+            {/* New text in bottom left corner */}
             <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 lg:bottom-8 lg:left-8 z-10">
               <span className="text-sm md:text-base lg:text-lg font-medium text-white drop-shadow-md">
                 Tradeway
@@ -103,6 +145,13 @@ function Login() {
                 Log in to continue your shopping experience.
               </p>
             </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-center">
+                {error}
+              </div>
+            )}
 
             <Form {...form}>
               <form
@@ -179,29 +228,33 @@ function Login() {
 
                 <Button
                   type="submit"
+                  disabled={loading}
                   className="w-full bg-[#022EB7] hover:bg-blue-600"
                 >
-                  Login
+                  {loading ? "Logging in..." : "Login"}
                 </Button>
 
-                <Button
-  type="button"
-  className="w-full h-10 bg-white text-black hover:bg-gray-100 border border-gray-300 flex items-center justify-center px-0.2"
->
-  <img 
-    src="./src/assets/login_btn.png" 
-    alt="Google logo" 
-    className="h-10 w-160 m-0" 
-  />
-</Button>
+                {/* Google Login Button - Uncomment when ready to use */}
+                {/* 
+                <div className="w-full flex justify-center mt-4">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={handleGoogleFailure}
+                    type="standard"
+                    theme="filled_blue"
+                    size="large"
+                    text="signin_with"
+                  />
+                </div>
+                */}
               </form>
             </Form>
 
             <div className="text-center text-sm mt-6 mb-4">
               <span className="text-gray-500">Don't have an account? </span>
-              <a href="/Signup" className="text-blue-600 hover:underline">
+              <Link to="/signup" className="text-blue-600 hover:underline">
                 Sign up
-              </a>
+              </Link>
             </div>
           </div>
         </div>

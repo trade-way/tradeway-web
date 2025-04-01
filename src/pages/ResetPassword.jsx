@@ -43,6 +43,42 @@ function ResetPassword() {
     },
   });
 
+
+// Handle form submission
+async function onSubmit(values) {
+  setLoading(true);
+  setError(null);
+
+  try {
+    // Assuming you have a method in authService for OTP verification
+    const response = await authService.verifyResetPasswordOTP({
+      otp: values.otp
+    });
+
+    console.log("OTP Verification successful:", response);
+
+    // Navigate to password reset page or directly reset password
+    navigate("/new-password");
+  } catch (err) {
+    console.error("OTP Verification failed:", err);
+    
+    // More detailed error handling
+    if (err.response) {
+      setError(
+        err.response.data.message || 
+        "OTP Verification failed. Please try again."
+      );
+    } else if (err.request) {
+      setError("No response from server. Please check your connection.");
+    } else {
+      setError("An unexpected error occurred. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+}
+
+
   // Handle form submission
   async function onSubmit(values) {
     console.log(values);
