@@ -8,6 +8,6 @@
     "include": [
     "**/*.js",
     "**/*.jsx"
-    ],
+, "src/pages/VerifyOtp.jsx"    ],
     "exclude": ["node_modules"]
 }
