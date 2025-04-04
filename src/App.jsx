@@ -9,6 +9,7 @@ import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
 import DeliveryDetails from "./pages/DeliveryDetails.jsx";
+import PaymentMethod from "./pages/PaymentMethod.jsx";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
           <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/delivery" element={<DeliveryDetails />} />
-        
+          <Route path="/payment-method" element={<PaymentMethod />} />
+
           {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
             {/* Protected Routes */}

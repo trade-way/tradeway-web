@@ -13,14 +13,22 @@ const DeliveryDetails = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div className="flex flex-col">
             <span className="text-sm mb-1">First Name</span>
-            <Input type="text" placeholder="Enter first name" />
+            <Input
+              type="text"
+              placeholder="Enter first name"
+              className="text-sm sm:text-base"
+            />
           </div>
           <div className="flex flex-col">
             <span className="text-sm mb-1">Last Name</span>
-            <Input type="text" placeholder="Enter last name" />
+            <Input
+              type="text"
+              placeholder="Enter last name"
+              className="text-sm sm:text-base"
+            />
           </div>
 
           {/* Second row */}

@@ -225,7 +225,9 @@ const PaymentMethod = () => {
     return null;
   };
 
-  const renderUnavailableModal = () => {
+console.log("Selected payment method:", selectedPayment);
+console.log("Card details:", cardDetails);
+console.log("Processing payment with:", cardDetails);  const renderUnavailableModal = () => {
     if (["palmpay", "opay", "later"].includes(selectedPayment)) {
       return (
         <div
