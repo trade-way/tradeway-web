@@ -1,19 +1,14 @@
-// InputWrapper.js
 import React from "react";
 
 const InputWrapper = ({ label, children }) => {
   return (
-    <div className="">
+    <div className="w-full">
       <fieldset
-        className="border border-[#c1c3ca] rounded-md flex items-center z-10"
-        style={{
-          height: "66.64px",
-          // justify: "space-between",
-          // margin: "14px"
-        }}
+        className="w-full border border-[#c1c3ca] rounded-md px-3 flex items-center"
+        style={{ height: "66.64px" }}
       >
-        <legend className="text-sm text-muted-foreground mx-3">{label}</legend>
-        {children}
+        <legend className="text-sm text-muted-foreground px-2">{label}</legend>
+        <div className="w-full">{children}</div>
       </fieldset>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {TransparentInput} from "../components/ui/transparentInput";
 import LogoHeader from "../components/ui/logoHeader";
 import InputWrapper from "../components/ui/InputWrapper";
+import {ArrowLeft} from "lucide-react";
 
 const DeliveryDetails = () => {
   const [formData, setFormData] = useState({
@@ -44,16 +45,22 @@ const DeliveryDetails = () => {
   };
 
   return (
-    <>
+    <div className="w-screen">
       <LogoHeader />
-      <div className="max-w-3xl p-6 mx-auto">
-        <div className="flex justify-center mb-6">
-
+      <button
+          className="justify-start w-[21.33px] h-[21.33px] p-[5.33px] ml-[66px] mt-[25px]"
+        >
+          <ArrowLeft/>
+        </button>
+      <div className="w-screen p-6 mx-auto"> 
+       
+        <div className= "text-center mb-6">
+       
           <h1 className="text-2xl font-extrabold">Input Address</h1>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="w-[757px] border border-3 shadow-none rounded-[16px] p-[24px] gap-[9.16px]">
+        <form className="w-[757px] mx-auto" onSubmit={handleSubmit}>
+          <div className="border-3 shadow-none rounded-[16px] p-[24px] gap-[9.16px]">
           <div className="grid grid-cols-2 gap-[14px]">
             {/* Row 1 */}
             <div className="grid grid-cols-2 gap-[20px] col-span-2">
@@ -190,7 +197,7 @@ const DeliveryDetails = () => {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 
