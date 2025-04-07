@@ -183,7 +183,7 @@ const DeliveryDetails = () => {
           <div className="flex justify-center mt-6 space-x-4">
             <button
               type="button"
-              className="px-[30px] py-[7px] text-[#9c9c9c] font-bold text border border-[#c1c3ca] border-[2px] rounded-md bg-transparent hover:bg-gray-100 active:bg-transparent"
+              className="px-[30px] py-[7px] text-[#9c9c9c] font-bold text  border-[#c1c3ca] border-[2px] rounded-md bg-transparent hover:bg-gray-100 active:bg-transparent"
               onClick={handleCancel}
             >
               Cancel

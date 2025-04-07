@@ -14,6 +14,7 @@ import LogoHeader from "../components/ui/logoHeader";
 const PaymentMethod = () => {
   const navigate = useNavigate();
   const [selectedPayment, setSelectedPayment] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
     expireDate: "",
@@ -23,6 +24,7 @@ const PaymentMethod = () => {
 
   const handlePaymentSelect = (method) => {
     setSelectedPayment(method);
+    setShowModal(false);
   };
 
   const handleBack = () => {
@@ -35,10 +37,7 @@ const PaymentMethod = () => {
 
   const handleConfirm = () => {
     if (selectedPayment) {
-      // Handle the selected payment method
-      console.log("Selected payment method:", selectedPayment);
-      // Navigate to next page or process payment
-      // navigate to next page
+      setShowModal(true);
     } else {
       alert("Please select a payment method");
     }
@@ -58,6 +57,7 @@ const PaymentMethod = () => {
   };
 
   const handleCloseCardForm = () => {
+    setShowModal(false);
     setSelectedPayment("");
   };
 
@@ -66,7 +66,7 @@ const PaymentMethod = () => {
   };
 
   const renderCardForm = () => {
-    if (selectedPayment === "cards") {
+    if (selectedPayment === "cards" && showModal) {
       return (
         <CardFormModal
           cardDetails={cardDetails}
@@ -82,7 +82,7 @@ const PaymentMethod = () => {
   };
 
   const renderDeliveryModal = () => {
-    if (selectedPayment === "delivery") {
+    if (selectedPayment === "delivery" && showModal) {
       return (
         <DeliveryModal
           handleCloseCardForm={handleCloseCardForm}
@@ -94,7 +94,7 @@ const PaymentMethod = () => {
   };
 
   const renderUnavailableModal = () => {
-    if (["palmpay", "opay", "later"].includes(selectedPayment)) {
+    if (["palmpay", "opay", "later"].includes(selectedPayment) && showModal) {
       return <UnavailableModal handleCloseCardForm={handleCloseCardForm} />;
     }
     return null;
@@ -250,7 +250,6 @@ const PaymentMethod = () => {
 
               {renderUnavailableModal()}
 
-             
               <div className="flex justify-center items-center space-x-4 pt-4 mt-4 border-t border-gray-200">
                 <img src={visa} alt="Visa" className="h-4 sm:h-5" />
                 <img src={mastercard} alt="Mastercard" className="h-4 sm:h-5" />
@@ -262,7 +261,6 @@ const PaymentMethod = () => {
           </div>
         </div>
 
-        
         <div className="mt-6 flex justify-center items-center space-x-4">
           <button
             onClick={handleCancel}
@@ -274,7 +272,7 @@ const PaymentMethod = () => {
             onClick={handleConfirm}
             className="w-[280px] py-3 bg-[#0040FF] text-white rounded-[15px] text-base hover:bg-blue-700 transition-colors"
           >
-            Save payment method
+            Confirm payment method
           </button>
         </div>
       </div>

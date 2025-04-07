@@ -23,7 +23,7 @@ const CardFormModal = ({
         }
       }}
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-[500px] p-4 sm:p-8 relative">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-[500px] p-4 sm:p-8 relative ">
         <button
           onClick={handleCloseCardForm}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -121,3 +121,8 @@ const CardFormModal = ({
 };
 
 export default CardFormModal;
+
+
+
+
+
