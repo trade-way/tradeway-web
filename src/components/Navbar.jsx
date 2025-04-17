@@ -1,16 +1,12 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Search,
-  ChevronDown,
-  ShoppingCart,
-  User2Icon,
-  UserCircle,
-  UserCircle2Icon,
-} from "lucide-react";
-import { useState } from "react";
-import { Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { Button } from "@/components/ui/button"
+import { Search, ChevronDown, ShoppingCart, User2Icon, UserCircle, UserCircle2Icon} from 'lucide-react'
+import { useState } from 'react';
+// import { Input } from "./components/ui/input";
+import { Menu } from 'lucide-react'; // Add this import
+import { Link } from 'react-router-dom';
+
+
 
 const Navbar = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
@@ -124,53 +120,32 @@ const Navbar = () => {
             <Link to="/contact">Contact</Link>
           </li>
         </ul>
-
-        <div className="flex items-center gap-6">
-          {isLoggedIn ? (
-            <>
-              <Link to="/cart">
-                <ShoppingCart className="h-6 w-6" />
-              </Link>
-              <button
-                className="relative flex items-center gap-1 hover:text-blue-700"
-                onClick={handleProfileClick}
-              >
-                <UserCircle2Icon size={25} />
-                <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`}
-                />
-
-                {isProfileOpen && (
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-2 z-50">
-                    <Link
-                      to="/account"
-                      className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 mb-2 rounded-xs "
-                    >
-                      My Account
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 mb-2 rounded-xs "
-                    >
-                      Order History
-                    </Link>
-                    <Link
-                      to="/logout"
-                      className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 rounded-xs "
-                    >
-                      Logout
-                    </Link>
-                  </div>
-                )}
-              </button>
-            </>
-          ) : (
-            <Link to="/login">
-              <Button className="bg-[#022EB7] hover:bg-blue-600">Login</Button>
-            </Link>
-          )}
+        
+        <div className='flex items-center gap-6'>
+          <a href="/cart">
+            <ShoppingCart className='h-6 w-6' />
+          </a>
+          <button 
+            className='relative flex items-center gap-1 hover:text-blue-700'
+            onClick={handleProfileClick}
+          >
+            <UserCircle2Icon size={25}/>
+            <ChevronDown className={`h-4 w-4 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+            
+            {isProfileOpen && (
+              <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-2 z-50">
+                <a href="/account" className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 mb-2 rounded-xs ">
+                  My Account
+                </a>
+                <a href="/orders" className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 mb-2 rounded-xs ">
+                  Order History
+                </a>
+                <a href="/logout" className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 rounded-xs ">
+                  Logout
+                </a>
+              </div>
+            )}
+          </button>
         </div>
       </div>
 
