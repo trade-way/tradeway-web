@@ -76,6 +76,7 @@ function Login() {
             </p>
           </div>
 
+<<<<<<< Updated upstream
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -96,6 +97,22 @@ function Login() {
                   </FormItem>
                 )}
               />
+=======
+      <div className="min-h-screen absolute inset-0 lg:grid lg:grid-cols-5">
+        {/* Left Side - Image Section */}
+        <div className="h-screen lg:col-span-2 relative">
+          {/* Use import.meta.url for Vite or process.env.PUBLIC_URL for Create React App */}
+          <div className="bg-[url(/src/assets/image_2.png)] h-full w-full bg-center bg-no-repeat bg-cover object-contain relative">
+            {/* Logo in top right corner */}
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:right-8 z-10 flex items-center">
+              <img 
+                src="/src/assets/logo.png" 
+                alt="Company Logo" 
+                className="w-auto h-8 sm:h-10 lg:h-10"
+              /> 
+              
+            </div>
+>>>>>>> Stashed changes
 
               <FormField
                 control={form.control}
