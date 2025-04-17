@@ -16,7 +16,6 @@ import { Container } from "./components/ui/container.jsx";
 
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
 import Cart from "./pages/Cart.jsx";
 import ProductPage from "./pages/Product.jsx";
@@ -58,7 +57,6 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/Pass" element={<Pass />} />
           <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/cart" exact element={<Cart />}></Route>
@@ -69,10 +67,11 @@ function App() {
 
          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}>
-          {/* Protected Routes */}
-          <Route  index  element={<Home/>} />  
-          <Route element={<PrivateRoute />}>
-            {/* Add protected routes inside here */}
+            <Route index element={<Home />} /> {/* Home page as index route */}
+            {/* <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} /> */}
+            <Route path="/cart" element={<Cart />} /> 
+            <Route path="/products/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
+            {/* Add other protected routes here */}
           </Route>
           {/* Public Routes */}
          
@@ -84,7 +83,7 @@ function App() {
 
         </Routes>
       </BrowserRouter>
-   
+    
   );
 }
 
