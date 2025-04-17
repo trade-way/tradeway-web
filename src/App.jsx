@@ -8,7 +8,8 @@ import Pass from "./pages/Pass.jsx";
 import { Container } from "./components/ui/container.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
-import AddressForm from "./pages/AddressForm.jsx";
+// import AddressForm from "./pages/AddressForm.jsx";
+
 
 
 function App() {
@@ -26,6 +27,8 @@ function App() {
          
          {/* Layout component will be rendered for all the routes */}
           <Route path="/" element={<Layout />}/>
+          {/* <Route path="/" element={<AddressForm />}/> */}
+
        
           
           {/* Protected Routes */}
