@@ -10,8 +10,7 @@ import { Container } from '@/components/ui/container'
 const Cart = () => {
   return (<>
     {/* <Container> */}
-    
-    <CartProduct />
+        <CartProduct />
     <ViewedCarousel />
     <TopSellingItemsCarousel />
     <YouMayALsoLikeCarousel />
