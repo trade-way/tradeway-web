@@ -58,7 +58,7 @@ function Login() {
       console.log("Login successful:", response);
 
       // Redirect to dashboard or home page after successful login
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -88,7 +88,7 @@ function Login() {
       // const response = await authService.googleLogin(googleLoginData);
       
       console.log("Google Login successful:", googleLoginData);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error("Google Login failed:", err);
       setError(

@@ -50,7 +50,6 @@ function Signup() {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
       rememberMe: false,
     },
     mode: "onChange", // Add this to validate on change
@@ -59,18 +58,25 @@ function Signup() {
   // Async function to handle signup form submission
   async function onSubmit(values) {
     // Log the submitted form values for debugging
-    console.log(values);
+    console.log("Form Values:", values);
 
     // Set loading state to true before making the API call
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
 
-    // include account type for testing
-    values.account_type = "BUYER";
+    // Prepare the data to send to the backend
+    const signupData = {
+      name: values.name,
+      email: values.email,
+      account_type: "BUYER", // Keep this as per your logic
+      password: values.password,
+    };
+
+    console.log("Signup Request Payload:", signupData);
 
     try {
-      const response = await authService.register(values);
+      const response = await authService.register(signupData);
       setSuccessMessage(response.message || "Registration successful!");
       setLoading(false);
 
@@ -83,10 +89,12 @@ function Signup() {
       }, 1500);
     } catch (e) {
       setLoading(false);
-      setError(
-        e.response?.data?.message || "Registration failed. Please try again."
-      );
       console.error(e);
+      if (e.response?.data?.details?.[0]?.password) {
+        setError(e.response.data.details[0].password);
+      } else {
+        setError(e.response?.data?.message || "Registration failed. Please try again.");
+      }
     }
   }
 
@@ -103,7 +111,7 @@ function Signup() {
                 alt="Company Logo"
                 className="w-auto h-8 sm:h-10"
               />
-              <span className="ml-1 text-base font-bold text-white">Logo</span>
+              
             </div>
 
             {/* Text in bottom left corner */}

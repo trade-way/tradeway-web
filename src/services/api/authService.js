@@ -27,10 +27,16 @@ const authService = {
   },
 
   logout: async () => {
-    await api.post(API_ENDPOINTS.authentication.logout);
-
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("refresh_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+    try {
+      await api.post(API_ENDPOINTS.authentication.logout, { refresh_token: refreshToken });
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Optionally, re-throw the error or handle it as needed
+      throw error;
+    }
   },
 
   // In your authService.js file

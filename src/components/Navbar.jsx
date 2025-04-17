@@ -1,18 +1,22 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Search, ChevronDown, ShoppingCart, User2Icon, UserCircle, UserCircle2Icon} from 'lucide-react'
-import { useState } from 'react';
-// import { Input } from "./components/ui/input";
-import { Menu } from 'lucide-react'; // Add this import
-import { Link } from 'react-router-dom';
-
-
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Search, ChevronDown, ShoppingCart, User2Icon, UserCircle, UserCircle2Icon} from 'lucide-react';
+import { Menu } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../services/api/authService'; // Import your auth service
 
 const Navbar = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace with your actual authentication check
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if an auth token exists in localStorage when the component mounts
+    const authToken = localStorage.getItem('token');
+    setIsLoggedIn(!!authToken);
+  }, []);
 
   const handleShopClick = () => {
     setIsShopOpen(!isShopOpen);
@@ -22,6 +26,18 @@ const Navbar = () => {
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
     setIsShopOpen(false);
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault(); // Prevent the default link behavior
+    try {
+      await authService.logout();
+      setIsLoggedIn(false);
+      navigate('/login'); // Redirect to login page after successful logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Optionally, display an error message to the user
+    }
   };
 
   return (
@@ -137,7 +153,6 @@ const Navbar = () => {
                     isProfileOpen ? "rotate-180" : ""
                   }`}
                 />
-
                 {isProfileOpen && (
                   <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg p-2 z-50">
                     <Link
@@ -154,6 +169,7 @@ const Navbar = () => {
                     </Link>
                     <Link
                       to="/logout"
+                      onClick={handleLogout}
                       className="block px-4 py-2 hover:bg-gray-50 border border-gray-400 rounded-xs "
                     >
                       Logout
@@ -286,6 +302,7 @@ const Navbar = () => {
                       </Link>
                       <Link
                         to="/logout"
+                        onClick={handleLogout}
                         className="block py-2 border border-gray-400 rounded-xs px-4"
                       >
                         Logout
@@ -297,7 +314,7 @@ const Navbar = () => {
             ) : (
               <li>
                 <Link to="/login">
-                  <button className="bg-[#022EB7]">Login</button>
+                  <button className="bg-[#022EB7] text-white rounded-md py-2 px-4 w-full">Login</button>
                 </Link>
               </li>
             )}
