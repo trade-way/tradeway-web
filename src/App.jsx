@@ -16,7 +16,6 @@ import { Container } from "./components/ui/container.jsx";
 
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
 import Cart from "./pages/Cart.jsx";
 import ProductPage from "./pages/Product.jsx";
