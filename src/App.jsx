@@ -17,11 +17,16 @@ import { Container } from "./components/ui/container.jsx";
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 import Layout from "./Layout.jsx";
+
+// import AddressForm from "./pages/AddressForm.jsx";
+
+
 import Cart from "./pages/Cart.jsx";
 import ProductPage from "./pages/Product.jsx";
 import Home from "./pages/Home.jsx";
 import Product from "./pages/productDetails.jsx";
 import { ProductProvider } from "./context/ProductContext.jsx";
+
 
 
 function App() {
@@ -35,6 +40,22 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+         
+         {/* Layout component will be rendered for all the routes */}
+          <Route path="/" element={<Layout />}/>
+          {/* <Route path="/" element={<AddressForm />}/> */}
+
+       
+          
+          {/* Protected Routes */}
+          <Route element={<PrivateRoute />}>
+            {/* Add protected routes inside here */}
+              {/* <Route path="/address" element={<AddressForm />} /> */}
+          </Route>
+          {/* Public Routes */}
+          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
+         
           <Route path="/resend-verification" element={<ResendVerification />} />
 
 
@@ -46,6 +67,7 @@ function App() {
             <Route path="/product-details/:productId" element={<Product />} />
             {/* Add other protected routes here */}
           </Route>
+
 
 
           {/* Redirect for the root path */}
