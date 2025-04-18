@@ -98,9 +98,7 @@ function VerifyOTP() {
                 alt="Company Logo"
                 className="w-auto h-8 sm:h-10 lg:h-10"
               />
-              <span className="m-1 md:text-base font-bold text-white lg:text-lg font-poppins">
-                Logo
-              </span>
+              
             </div>
 
             {/* New text in bottom left corner */}
