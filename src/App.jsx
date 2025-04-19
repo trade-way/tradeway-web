@@ -17,6 +17,8 @@ import { Container } from "./components/ui/container.jsx";
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 import Layout from "./Layout.jsx";
+import DeliveryDetails from "./pages/DeliveryDetails.jsx";
+import PaymentMethod from "./pages/PaymentMethod.jsx";
 
 // import AddressForm from "./pages/AddressForm.jsx";
 
@@ -40,6 +42,9 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/delivery" element={<DeliveryDetails />} />
+          <Route path="/payment-method" element={<PaymentMethod />} />
+       
 
          
          {/* Layout component will be rendered for all the routes */}
