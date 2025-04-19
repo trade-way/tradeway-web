@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { API_ENDPOINTS, PUBLIC_ENDPOINTS } from '@/services/endpoint';
+import axios from "axios";
+import { API_ENDPOINTS, PUBLIC_ENDPOINTS } from "@/services/endpoint";
 
 /**
  * Function to format URL with parameters
@@ -7,14 +7,14 @@ import { API_ENDPOINTS, PUBLIC_ENDPOINTS } from '@/services/endpoint';
  */
 const formatUrl = (url, params = {}) => {
   let formattedUrl = url;
-  
-  Object.keys(params).forEach(key => {
+
+  Object.keys(params).forEach((key) => {
     if (formattedUrl.includes(`:${key}`)) {
       formattedUrl = formattedUrl.replace(`:${key}`, params[key]);
       delete params[key]; // Remove used parameters
     }
   });
-  
+
   return formattedUrl;
 };
 
@@ -22,7 +22,7 @@ const formatUrl = (url, params = {}) => {
  * Function to check if an endpoint is public
  */
 const isPublicEndpoint = (url) => {
-  return PUBLIC_ENDPOINTS.some(endpoint => url.startsWith(endpoint));
+  return PUBLIC_ENDPOINTS.some((endpoint) => url.startsWith(endpoint));
 };
 
 // Token refresh logic
@@ -31,30 +31,31 @@ let refreshTokenPromise = null;
 const refreshToken = async () => {
   if (!refreshTokenPromise) {
     const baseURL = import.meta.env.VITE_API_BASE_URL;
-    
-    refreshTokenPromise = axios.post(
-      `${baseURL}/${API_ENDPOINTS.authentication.refreshToken}`,
-      { refresh_token: localStorage.getItem('refresh_token') },
-      { headers: { 'Content-Type': 'application/json' } }
-    )
-    .then(response => {
-      localStorage.setItem('auth_token', response.data.access_token);
-      if (response.data.refresh_token) {
-        localStorage.setItem('refresh_token', response.data.refresh_token);
-      }
-      return response.data.access_token;
-    })
-    .catch(() => {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('refresh_token');
-      window.location.href = '/login';
-      return Promise.reject('Refresh token failed');
-    })
-    .finally(() => {
-      refreshTokenPromise = null;
-    });
+
+    refreshTokenPromise = axios
+      .post(
+        `${baseURL}/${API_ENDPOINTS.authentication.refreshToken}`,
+        { refresh_token: localStorage.getItem("refresh_token") },
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((response) => {
+        localStorage.setItem("auth_token", response.data.access_token);
+        if (response.data.refresh_token) {
+          localStorage.setItem("refresh_token", response.data.refresh_token);
+        }
+        return response.data.access_token;
+      })
+      .catch(() => {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
+        return Promise.reject("Refresh token failed");
+      })
+      .finally(() => {
+        refreshTokenPromise = null;
+      });
   }
-  
+
   return refreshTokenPromise;
 };
 
@@ -66,9 +67,9 @@ const createHttpClient = () => {
     baseURL: import.meta.env.VITE_API_BASE_URL,
     // timeout: 10000,
     headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    }
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
   });
 
   // Request interceptor
@@ -76,12 +77,12 @@ const createHttpClient = () => {
     (config) => {
       // Only add authorization header for protected endpoints
       if (!isPublicEndpoint(config.url)) {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem("auth_token");
         if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
       }
-      
+
       return config;
     },
     (error) => {
@@ -97,20 +98,20 @@ const createHttpClient = () => {
     async (error) => {
       const { config, response } = error;
       const originalRequest = config;
-      
+
       // If the error is 401 and we haven't retried yet
       if (response && response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
-        
+
         try {
           const newToken = await refreshToken();
-          originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+          originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
           return axios(originalRequest);
         } catch (refreshError) {
           return Promise.reject(refreshError);
         }
       }
-      
+
       return Promise.reject(error);
     }
   );
@@ -129,26 +130,26 @@ const api = {
     const url = formatUrl(endpoint, params);
     return httpClient.get(url, { params, ...config });
   },
-  
+
   post: (endpoint, data = {}, params = {}, config = {}) => {
     const url = formatUrl(endpoint, params);
     return httpClient.post(url, data, config);
   },
-  
+
   put: (endpoint, data = {}, params = {}, config = {}) => {
     const url = formatUrl(endpoint, params);
     return httpClient.put(url, data, config);
   },
-  
+
   patch: (endpoint, data = {}, params = {}, config = {}) => {
     const url = formatUrl(endpoint, params);
     return httpClient.patch(url, data, config);
   },
-  
+
   delete: (endpoint, params = {}, config = {}) => {
     const url = formatUrl(endpoint, params);
     return httpClient.delete(url, { params, ...config });
-  }
+  },
 };
 
 export { api, API_ENDPOINTS };
