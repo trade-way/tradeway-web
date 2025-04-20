@@ -12,6 +12,7 @@ import { FaStar } from "react-icons/fa";
 import Footer from "@/components/Footer";
 import { useProduct } from '../context/ProductContext'; // Import the hook
 import { productService } from '../services/api/productService'; // Import your product service
+import { useCart } from "@/context/CartContext"; // Import the CartContext hook
 
 const StarRating = ({ rating }) => {
   const filledStars = Math.floor(rating);
@@ -86,6 +87,7 @@ const ProductDetails = () => {
   const [selectedState, setSelectedState] = useState("Lagos State");
   const [selectedCity, setSelectedCity] = useState("Ijeshatedo Surulere");
   const navigate = useNavigate();
+  const { addItemToCart } = useCart(); // Get the addItemToCart function from the context
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -184,6 +186,21 @@ const ProductDetails = () => {
     setSelectedCity(city);
   };
 
+  const handleAddToCart = async () => {
+    if (productDetails && productDetails.id) {
+      const result = await addItemToCart(productDetails.id, quantity);
+      if (result && result.ok) {
+        // Optionally show a success message or redirect to the cart
+        console.log("Item added to cart successfully!");
+        navigate('/cart'); // Example: Redirect to the cart page
+      } else {
+        // Handle error adding to cart
+        console.error("Failed to add item to cart:", result ? result.statusText : "Unknown error");
+        // Optionally show an error message to the user
+      }
+    }
+  };
+
   return (
     <Container>
       <div className="max-w-6xl mx-auto p-8">
@@ -241,7 +258,10 @@ const ProductDetails = () => {
               <button className="bg-blue-600 text-white px-6 py-2 rounded-full">
                 Order Now
               </button>
-              <button className="flex items-center border border-blue-600 text-blue-600 px-4 py-2 rounded-full">
+              <button
+                className="flex items-center border border-blue-600 text-blue-600 px-4 py-2 rounded-full"
+                onClick={handleAddToCart} // Call handleAddToCart on click
+              >
                 <ShoppingCart className="mr-2" />
                 Add to Cart
               </button>
@@ -396,38 +416,38 @@ const ProductDetails = () => {
                         </span>
                       </p>
                     </div>
-                  </div>
+                    </div>
 
-                  <p>
-                    Expected delivery between {getDoorDeliveryDates()}
-                  </p>
-                </div>
-
-                <div className="mt-6">
-                  <div className="flex gap-x-3 mb-2">
-                    <img src={returnPolicy} alt="Return Policy Icon" />
-                    <div>
-                      <p>Return Policy</p>
-                      <p className="text-[#6E7174] text-[14px]">
-                        Free return within 7 days for ALL eligible items Details
+                      <p>
+                        Expected delivery between {getDoorDeliveryDates()}
                       </p>
+                    </div>
+
+                    <div className="mt-6">
+                      <div className="flex gap-x-3 mb-2">
+                        <img src={returnPolicy} alt="Return Policy Icon" />
+                        <div>
+                          <p>Return Policy</p>
+                          <p className="text-[#6E7174] text-[14px]">
+                            Free return within 7 days for ALL eligible items Details
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Related Products Section */}
+            {/* You can implement a related products section here if needed,
+                potentially filtering from the initial product list or fetching
+                based on categories. */}
           </div>
-        </div>
 
-        {/* Related Products Section */}
-        {/* You can implement a related products section here if needed,
-           potentially filtering from the initial product list or fetching
-           based on categories. */}
-      </div>
 
-      
-    </Container>
-  );
-};
+        </Container>
+      );
+    };
 
-export default ProductDetails;
+    export default ProductDetails;

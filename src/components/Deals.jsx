@@ -2,10 +2,12 @@ import { addToCart } from '../services/api/cartService';
 import { useNavigate } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
 import DealCard from "./ui/DealCard";
+import { useState } from 'react'; // Import useState
 
 const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
   const navigate = useNavigate();
   const { setSelectedProduct } = useProduct();
+  const [notification, setNotification] = useState(null); // State for notification
 
   const handleCardClick = (product) => {
     setSelectedProduct(product);
@@ -17,14 +19,21 @@ const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
       const response = await addToCart(productId);
       
       if (response.ok) {
-        alert(`${productName} added to cart!`);
+        console.log("product added to cart:", response.data)
+        setNotification({ type: 'success', message: `${productName} added to cart!` });
+        // Optional: Trigger a cart refresh here if needed
+        // If you're using the CartContext you could call its fetchCart method
       } else {
-        alert(`Failed to add to cart: ${response.statusText || 'Unknown error'}`);
+        setNotification({ 
+          type: 'error', 
+          message: `Failed to add to cart: ${response.statusText || 'Unknown error'}` 
+        });
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      console.log('API_ENDPOINTS:', API_ENDPOINTS);
-      alert("Failed to add to cart.");
+      setNotification({ type: 'error', message: "Failed to add to cart." });
+    } finally {
+      setTimeout(() => setNotification(null), 3000);
     }
   };
 
@@ -42,13 +51,19 @@ const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
           )}
         </div>
 
+        {notification && (
+          <div className={`mb-4 p-3 rounded-md text-white ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+            {notification.message}
+          </div>
+        )}
+
         <div className="grid grid-flow-col auto-cols-[minmax(200px,1fr)] sm:auto-cols-[minmax(220px,1fr)] md:auto-cols-[minmax(250px,1fr)] gap-3 md:gap-4 lg:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
           {dealList && dealList.length > 0 ? (
             dealList.map((dealitem) => (
               <div key={dealitem.id} className="snap-start">
                 <DealCard
                   onClick={() => handleCardClick(dealitem)}
-                  onAddToCart={handleAddToCart}
+                  onAddToCart={handleAddToCart} // Pass the handleAddToCart function
                   productName={displayStyle !== "imagePriceOnly" ? dealitem.name : undefined}
                   productImage={dealitem.image}
                   price={dealitem.current_price}

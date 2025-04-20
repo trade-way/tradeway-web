@@ -1,6 +1,6 @@
+// src/pages/PaymentMethod.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input } from "../components/ui/input";
 import visa from "@/assets/visa.png";
 import mastercard from "@/assets/mastercard.png";
 import paypal from "@/assets/paypal.png";
@@ -10,10 +10,11 @@ import CardFormModal from "../components/modals/CardFormModal";
 import DeliveryModal from "../components/modals/DeliveryModal";
 import UnavailableModal from "../components/modals/UnavailableModal";
 import LogoHeader from "../components/ui/logoHeader";
+import { useCheckout } from "@/context/CheckoutContext"; // Import useCheckout
 
 const PaymentMethod = () => {
   const navigate = useNavigate();
-  const [selectedPayment, setSelectedPayment] = useState("");
+  const { paymentMethod, updatePaymentMethod, deliveryDetails } = useCheckout(); // Use context
   const [showModal, setShowModal] = useState(false);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
@@ -23,7 +24,7 @@ const PaymentMethod = () => {
   const [saveCardDetails, setSaveCardDetails] = useState(false);
 
   const handlePaymentSelect = (method) => {
-    setSelectedPayment(method);
+    updatePaymentMethod(method); // Update payment method in context
     setShowModal(false);
   };
 
@@ -32,12 +33,18 @@ const PaymentMethod = () => {
   };
 
   const handleCancel = () => {
+    updatePaymentMethod(""); // Reset payment method in context
     navigate(-1); // Goes back to previous page
   };
 
   const handleConfirm = () => {
-    if (selectedPayment) {
+    if (paymentMethod) {
       setShowModal(true);
+      console.log("Selected Payment Method:", paymentMethod);
+      console.log("Delivery Details on Confirm:", deliveryDetails);
+      // Here you would typically proceed to the next step (e.g., order confirmation)
+      // You can access deliveryDetails and paymentMethod from the useCheckout hook
+      // to send this information to your backend for order processing.
     } else {
       alert("Please select a payment method");
     }
@@ -52,13 +59,16 @@ const PaymentMethod = () => {
   };
 
   const handlePayment = () => {
-    // Handle payment processing
+    // Handle payment processing (you'll likely access deliveryDetails and paymentMethod from the context here)
     console.log("Processing payment with:", cardDetails);
+    console.log("Delivery Details from Context:", deliveryDetails);
+    console.log("Selected Payment Method from Context:", paymentMethod);
+    // After successful payment, you might navigate to an order confirmation page
   };
 
   const handleCloseCardForm = () => {
     setShowModal(false);
-    setSelectedPayment("");
+    updatePaymentMethod(""); // Reset selected payment on modal close
   };
 
   const handleSaveCardDetails = (e) => {
@@ -66,7 +76,7 @@ const PaymentMethod = () => {
   };
 
   const renderCardForm = () => {
-    if (selectedPayment === "cards" && showModal) {
+    if (paymentMethod === "cards" && showModal) {
       return (
         <CardFormModal
           cardDetails={cardDetails}
@@ -82,7 +92,7 @@ const PaymentMethod = () => {
   };
 
   const renderDeliveryModal = () => {
-    if (selectedPayment === "delivery" && showModal) {
+    if (paymentMethod === "delivery" && showModal) {
       return (
         <DeliveryModal
           handleCloseCardForm={handleCloseCardForm}
@@ -94,7 +104,7 @@ const PaymentMethod = () => {
   };
 
   const renderUnavailableModal = () => {
-    if (["palmpay", "opay", "later"].includes(selectedPayment) && showModal) {
+    if (["palmpay", "opay", "later"].includes(paymentMethod) && showModal) {
       return <UnavailableModal handleCloseCardForm={handleCloseCardForm} />;
     }
     return null;
@@ -141,7 +151,7 @@ const PaymentMethod = () => {
                 name="payment"
                 id="delivery"
                 className="h-5 w-5 text-blue-600 border-gray-300 cursor-pointer"
-                checked={selectedPayment === "delivery"}
+                checked={paymentMethod === "delivery"}
                 onChange={() => handlePaymentSelect("delivery")}
               />
               <label
@@ -166,7 +176,7 @@ const PaymentMethod = () => {
                   name="payment"
                   id="cards"
                   className="h-5 w-5 text-blue-600 border-gray-300 cursor-pointer"
-                  checked={selectedPayment === "cards"}
+                  checked={paymentMethod === "cards"}
                   onChange={() => handlePaymentSelect("cards")}
                 />
                 <label
@@ -188,7 +198,7 @@ const PaymentMethod = () => {
                       name="payment"
                       id="palmpay"
                       className="h-5 w-5 text-blue-600 border-gray-300 cursor-pointer"
-                      checked={selectedPayment === "palmpay"}
+                      checked={paymentMethod === "palmpay"}
                       onChange={() => handlePaymentSelect("palmpay")}
                     />
                     <label
@@ -210,7 +220,7 @@ const PaymentMethod = () => {
                       name="payment"
                       id="opay"
                       className="h-5 w-5 text-blue-600 border-gray-300 cursor-pointer"
-                      checked={selectedPayment === "opay"}
+                      checked={paymentMethod === "opay"}
                       onChange={() => handlePaymentSelect("opay")}
                     />
                     <label
@@ -232,7 +242,7 @@ const PaymentMethod = () => {
                       name="payment"
                       id="later"
                       className="h-5 w-5 text-blue-600 border-gray-300 cursor-pointer"
-                      checked={selectedPayment === "later"}
+                      checked={paymentMethod === "later"}
                       onChange={() => handlePaymentSelect("later")}
                     />
                     <label

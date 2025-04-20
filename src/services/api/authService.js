@@ -8,11 +8,12 @@ const authService = {
       credentials
     );
 
-    if (response.tokens.access_token) {
-      localStorage.setItem("auth_token", response.access_token);
+    if (response.tokens?.access_token) { // Access tokens from response.tokens
+      console.log("access token:", response.tokens.a)
+      localStorage.setItem("auth_token", response.tokens.access_token);
     }
-    if (response.tokens.refresh_token) {
-      localStorage.setItem("refresh_token", response.refresh_token);
+    if (response.tokens?.refresh_token) { // Access refresh tokens from response.tokens
+      localStorage.setItem("refresh_token", response.tokens.refresh_token);
     }
 
     return response;
@@ -26,16 +27,53 @@ const authService = {
     return response;
   },
 
-  logout: async () => {
-    const refreshToken = localStorage.getItem("refresh_token");
-    console.log("Refresh Token being sent:", refreshToken); // Add this line
+   logout: async () => {
     try {
-      await api.post(API_ENDPOINTS.authentication.logout, { refresh_token: refreshToken });
+      // Get the current token - needed for authorization
+      const token = localStorage.getItem("auth_token");
+      
+      if (!token) {
+        // Already logged out, just clean up and redirect
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
+        return { success: true };
+      }
+      
+      // Try to call the logout endpoint
+      await api.post(
+        API_ENDPOINTS.authentication.logout, 
+        {},  // Empty request body
+        {}, // No URL params 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      // Always clear local tokens regardless of API response
       localStorage.removeItem("auth_token");
       localStorage.removeItem("refresh_token");
+      
+      // Redirect to login page
+      window.location.href = "/login";
+      
+      return { success: true };
     } catch (error) {
-      console.error("Error during logout:", error);
-      throw error;
+      console.error("Logout failed:", error);
+      
+      // Even if server-side logout fails, we should still clear local storage
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+      
+      // Redirect to login anyway
+      window.location.href = "/login";
+      
+      return {
+        success: false,
+        error: error.message || "Logout failed"
+      };
     }
   },
 
