@@ -22,42 +22,45 @@ import ProductPage from "./pages/Product.jsx";
 import Home from "./pages/Home.jsx";
 import Product from "./pages/productDetails.jsx";
 import { ProductProvider } from "./context/ProductContext.jsx";
-
+import { CartProvider } from "./context/CartContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx"; // Import AuthProvider
 
 function App() {
   return (
     <BrowserRouter>
-      <ProductProvider>
-        <Routes>
-          {/* Public Authentication Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/resend-verification" element={<ResendVerification />} />
+      <AuthProvider> {/* Wrap your app with AuthProvider */}
+        <ProductProvider>
+          <CartProvider>
+            <Routes>
+              {/* Public Authentication Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/resend-verification" element={<ResendVerification />} />
 
+              {/* Protected Routes within Layout */}
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} /> {/* Home page as index route */}
+                <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+                <Route path="/product/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
+                <Route path="/product-details/:productId" element={<Product />} />
+                {/* Add other protected routes here */}
+              </Route>
 
-          {/* Protected Routes within Layout */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} /> {/* Home page as index route */}
-            <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-            <Route path="/product/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
-            <Route path="/product-details/:productId" element={<Product />} />
-            {/* Add other protected routes here */}
-          </Route>
+              {/* Redirect for the root path */}
+              <Route path="/" element={<Navigate to="/login" replace />} />
 
-
-          {/* Redirect for the root path */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-
-          {/* 404 Page Not Found */}
-          <Route
-            path="*"
-            element={<div>Page not found: {window.location.pathname}</div>}
-          />
-        </Routes>
-      </ProductProvider>
+              {/* 404 Page Not Found */}
+              <Route
+                path="*"
+                element={<div>Page not found: {window.location.pathname}</div>}
+              />
+            </Routes>
+          </CartProvider>
+        </ProductProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

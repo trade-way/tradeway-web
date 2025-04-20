@@ -63,7 +63,11 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div>Loading products...</div>;
+    return (
+      <div className="flex justify-center items-center h-48">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -85,13 +89,13 @@ const Home = () => {
     { title: 'Your Related Items...', products: products.sort(() => 0.5 - Math.random()).slice(0, 5) },
     { title: 'Televisons', products: productsByCategory['Tv'] || [] },
     { title: 'Laptops', products: productsByCategory['Laptop'] || [] },
-   
-    { title: 'HeadPhones', products: productsByCategory['HeadPhones'] || [] },
+
+    { title: 'HeadPhones', products: productsByCategory['Headset'] || [] },
     { title: 'Accessories', products: productsByCategory['Accessories'] || [] },
     // Add more sections as needed
   ];
 
-  const categoryKeys = Object.keys(productsByCategory);
+  // const categoryKeys = Object.keys(productsByCategory);
 
   return (
     <div>
@@ -108,8 +112,8 @@ const Home = () => {
         />
       ))}
 
-<Brands brandImageList={brandList} />
-{dealSections.slice(2,5).map((section) => (
+      <Brands brandImageList={brandList} />
+      {dealSections.slice(2,5).map((section) => (
         <Deals
           key={section.title}
           dealName={section.title}
@@ -118,17 +122,6 @@ const Home = () => {
           displayStyle="imagePriceOnly"
         />
       ))}
-
-    
-
-     
-
-     
-      
-
-     
-
-      {/* Add more Deals components for other categories as needed */}
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// pages/Login.jsx
+import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 // Uncomment this import if you plan to use Google authentication
 // import { GoogleLogin } from "@react-oauth/google";
@@ -25,6 +27,7 @@ function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { updateAuthTokens } = useContext(AuthContext); // Get updateAuthTokens from context
 
   const formSchema = z.object({
     email: z
@@ -57,8 +60,16 @@ function Login() {
       const response = await authService.login(values);
       console.log("Login successful:", response);
 
-      // Redirect to dashboard or home page after successful login
-      navigate("/");
+      if (response?.tokens?.access_token && response?.tokens?.refresh_token) {
+        // Update auth tokens in context and localStorage
+        updateAuthTokens(response.tokens.access_token, response.tokens.refresh_token);
+        console.log(
+          "Access and Refresh Tokens stored and context updated in Login"
+        );
+        navigate("/");
+      } else {
+        setError("Login successful, but tokens not received.");
+      }
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -75,7 +86,7 @@ function Login() {
       setLoading(true);
       // Decode the Google credential
       const decodedToken = jwtDecode(credentialResponse.credential);
-      
+
       // Prepare Google login data
       const googleLoginData = {
         email: decodedToken.email,
@@ -86,9 +97,17 @@ function Login() {
       // Call backend Google authentication
       // Uncomment the line below when your backend service is ready
       // const response = await authService.googleLogin(googleLoginData);
-      
       console.log("Google Login successful:", googleLoginData);
-      navigate("/");
+
+      // If your Google login returns tokens, update context and navigate
+      // Example (adjust based on your backend response):
+      // if (response?.tokens?.access_token && response?.tokens?.refresh_token) {
+      //   updateAuthTokens(response.tokens.access_token, response.tokens.refresh_token);
+      //   navigate("/");
+      // } else {
+      //   setError("Google Login successful, but tokens not received.");
+      // }
+      navigate("/"); // For now, just navigate after successful Google sign-in
     } catch (err) {
       console.error("Google Login failed:", err);
       setError(
@@ -117,11 +136,11 @@ function Login() {
           <div className="bg-[url(/src/assets/image_2.png)] h-full w-full bg-center bg-no-repeat bg-cover object-contain relative">
             {/* Logo in top right corner */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:right-8 z-10 flex items-center">
-              <img 
-                src="/src/assets/logo.png" 
-                alt="Company Logo" 
+              <img
+                src="/src/assets/logo.png"
+                alt="Company Logo"
                 className="w-auto h-8 sm:h-10 lg:h-10"
-              /> 
+              />
               <span className="m-1 md:text-base font-bold text-white lg:text-lg font-poppins">
                 Logo
               </span>
@@ -133,7 +152,7 @@ function Login() {
                 Tradeway
               </span>
             </div>
-          </div>    
+          </div>
         </div>
 
         {/* Right side - Login Form */}
@@ -235,7 +254,7 @@ function Login() {
                 </Button>
 
                 {/* Google Login Button - Uncomment when ready to use */}
-                {/* 
+                {/*
                 <div className="w-full flex justify-center mt-4">
                   <GoogleLogin
                     onSuccess={handleGoogleSuccess}
