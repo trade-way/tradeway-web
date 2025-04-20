@@ -8,14 +8,41 @@ const authService = {
       credentials
     );
 
-    if (response.tokens.access_token) {
-      localStorage.setItem("auth_token", response.access_token);
+    if (response.tokens && response.tokens.access_token) {
+      localStorage.setItem("auth_token", response.tokens.access_token);
     }
-    if (response.tokens.refresh_token) {
-      localStorage.setItem("refresh_token", response.refresh_token);
+    if (response.tokens && response.tokens.refresh_token) {
+      localStorage.setItem("refresh_token", response.tokens.refresh_token);
     }
 
     return response;
+  },
+
+  // Add this Google login function
+  googleLogin: async (googleData) => {
+    try {
+      const response = await api.post(
+        API_ENDPOINTS.authentication.googleLogin,
+        //
+        {
+          auth_token: googleData.access_token,
+          // redirect_uri: googleData.redirectUri || window.location.origin, // Required
+        }
+      );
+      console.log(response, "response from google login");
+      // Store tokens if they exist in the response
+      if (response.data && response.data.access_token) {
+        localStorage.setItem("auth_token", response.data.access_token);
+      }
+      if (response.data && response.data.refresh_token) {
+        localStorage.setItem("refresh_token", response.data.refresh_token);
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Google login error:", error);
+      throw error;
+    }
   },
 
   register: async (userData) => {
@@ -56,6 +83,7 @@ const authService = {
       throw error;
     }
   },
+
   forgotPassword: async (email) => {
     return api.post(API_ENDPOINTS.authentication.forgotPassword, { email });
   },

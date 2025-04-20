@@ -19,7 +19,7 @@ import { z } from "zod";
 import authService from "@/services/api/authService";
 
 // Uncomment this import if you plan to use Google authentication
-// import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
 function Login() {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ function Login() {
       console.log("Login successful:", response);
 
       // Redirect to dashboard or home page after successful login
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -75,24 +75,15 @@ function Login() {
       setLoading(true);
       // Decode the Google credential
       const decodedToken = jwtDecode(credentialResponse.credential);
-      
-      // Prepare Google login data
-      const googleLoginData = {
-        email: decodedToken.email,
-        name: decodedToken.name,
-        googleId: decodedToken.sub,
-      };
-
-      // Call backend Google authentication
-      // Uncomment the line below when your backend service is ready
-      // const response = await authService.googleLogin(googleLoginData);
-      
-      console.log("Google Login successful:", googleLoginData);
-      navigate("/dashboard");
+      console.log("response", credentialResponse);
+      await authService.googleLogin({
+        access_token: credentialResponse.credential,
+      });
+      navigate("/");
     } catch (err) {
-      console.error("Google Login failed:", err);
+      console.error("Google Signup failed:", err);
       setError(
-        err.response?.data?.message || "Google Login failed. Please try again."
+        err.response?.data?.message || "Google Signup failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -117,11 +108,11 @@ function Login() {
           <div className="bg-[url(/src/assets/image_2.png)] h-full w-full bg-center bg-no-repeat bg-cover object-contain relative">
             {/* Logo in top right corner */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:right-8 z-10 flex items-center">
-              <img 
-                src="/src/assets/logo.png" 
-                alt="Company Logo" 
+              <img
+                src="/src/assets/logo.png"
+                alt="Company Logo"
                 className="w-auto h-8 sm:h-10 lg:h-10"
-              /> 
+              />
               <span className="m-1 md:text-base font-bold text-white lg:text-lg font-poppins">
                 Logo
               </span>
@@ -133,7 +124,7 @@ function Login() {
                 Tradeway
               </span>
             </div>
-          </div>    
+          </div>
         </div>
 
         {/* Right side - Login Form */}
@@ -234,19 +225,31 @@ function Login() {
                   {loading ? "Logging in..." : "Login"}
                 </Button>
 
-                {/* Google Login Button - Uncomment when ready to use */}
-                {/* 
-                <div className="w-full flex justify-center mt-4">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleFailure}
-                    type="standard"
-                    theme="filled_blue"
-                    size="large"
-                    text="signin_with"
-                  />
+                <div className="container">
+                  <div className="w-full flex justify-center mt-4">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={handleGoogleFailure}
+                      type="standard"
+                      theme="filled_blue"
+                      size="large"
+                      text="signin_with"
+                    />
+                  </div>
+                  <div className="w-full flex justify-center custom-overlay">
+                    <button
+                      className="flex items-center justify-center gap-3 bg-white py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      type="button"
+                    >
+                      <img
+                        src="/public/images/google.png"
+                        alt="Custom Google icon"
+                        className="w-5 h-5"
+                      />
+                      <span>Log in with Google</span>
+                    </button>
+                  </div>
                 </div>
-                */}
               </form>
             </Form>
 

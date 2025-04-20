@@ -16,11 +16,10 @@ import { Container } from "./components/ui/container.jsx";
 
 // const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-import ResetPassword from "./pages/ResetPassword.jsx";
 import Layout from "./Layout.jsx";
 import Cart from "./pages/Cart.jsx";
 import ProductPage from "./pages/Product.jsx";
-import Home from "./pages/Home.jsx"
+import Home from "./pages/Home.jsx" 
 
 
 
@@ -58,7 +57,7 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/Signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/Pass" element={<Pass />} />
+          {/* <Route path="/Pass" element={<Pass />} /> */}
           <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route path="/cart" exact element={<Cart />}></Route>
