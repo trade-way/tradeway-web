@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronDown, ShoppingCart, User2Icon, UserCircle, UserCircle2Icon} from 'lucide-react';
-import { Menu } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import authService from '../services/api/authService'; // Import your auth service
+import {
+  Search,
+  ChevronDown,
+  ShoppingCart,
+  User2Icon,
+  UserCircle,
+  UserCircle2Icon,
+} from "lucide-react";
+import { Menu } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../services/api/authService"; // Import your auth service
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 const Navbar = () => {
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if an auth token exists in localStorage when the component mounts
-    const authToken = localStorage.getItem('token');
-    setIsLoggedIn(!!authToken);
-  }, []);
+  const { isLoggedIn, logout } = useContext(AuthContext); // Use AuthContext
 
   const handleShopClick = () => {
     setIsShopOpen(!isShopOpen);
@@ -29,14 +31,13 @@ const Navbar = () => {
   };
 
   const handleLogout = async (e) => {
-    e.preventDefault(); // Prevent the default link behavior
+    e.preventDefault();
     try {
-      await authService.logout();
-      setIsLoggedIn(false);
-      navigate('/login'); // Redirect to login page after successful logout
+      await authService.logout(); // Call your API logout
+      logout(); // Call the logout function from AuthContext
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally, display an error message to the user
     }
   };
 
@@ -314,7 +315,9 @@ const Navbar = () => {
             ) : (
               <li>
                 <Link to="/login">
-                  <button className="bg-[#022EB7] text-white rounded-md py-2 px-4 w-full">Login</button>
+                  <button className="bg-[#022EB7] text-white rounded-md py-2 px-4 w-full">
+                    Login
+                  </button>
                 </Link>
               </li>
             )}

@@ -1,4 +1,4 @@
-// pages/ProductDetails.jsx
+/* pages/ProductDetails.jsx */
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Container } from "@/components/ui/container";
@@ -11,6 +11,7 @@ import returnPolicy from "../assets/game-icons_card-pickup (2).png";
 import { FaStar } from "react-icons/fa";
 import Footer from "@/components/Footer";
 import { useProduct } from '../context/ProductContext'; // Import the hook
+import { productService } from '../services/api/productService'; // Import your product service
 
 const StarRating = ({ rating }) => {
   const filledStars = Math.floor(rating);
@@ -75,34 +76,56 @@ const Dropdown = ({ label, options, onSelect }) => {
 
 const ProductDetails = () => {
   const { productId } = useParams();
-  const { selectedProduct } = useProduct();
+  const { selectedProduct, setSelectedProduct } = useProduct(); // Get the setter as well
   const [activeTab, setActiveTab] = useState("description");
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(null);
-  const [selectedState, setSelectedState] = useState("Lagos State"); // Default state
-  const [selectedCity, setSelectedCity] = useState("Ijeshatedo Surulere"); // Default city
+  const [productDetails, setProductDetails] = useState(null); // State to hold fetched product details
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedState, setSelectedState] = useState("Lagos State");
+  const [selectedCity, setSelectedCity] = useState("Ijeshatedo Surulere");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!selectedProduct || selectedProduct.id !== productId) {
-      navigate('/');
-    } else {
+    const fetchDetails = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await productService.getProductById(productId);
+        setProductDetails(response.data); // Assuming your API response has a 'data' property
+        setMainImage(response.data.image);
+      } catch (err) {
+        setError(err.message || "Failed to fetch product details");
+        console.error("Error fetching product details:", err);
+        // Optionally navigate back or show an error message
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // If we have the product in context and the ID matches, use it
+    if (selectedProduct && selectedProduct.id === productId) {
+      setProductDetails(selectedProduct);
       setMainImage(selectedProduct.image);
+      setLoading(false);
+    } else {
+      // Otherwise, fetch from the API
+      fetchDetails();
     }
   }, [productId, selectedProduct, navigate]);
 
-  if (!selectedProduct) {
-    return (
-      <Container>
-        <div className="py-10 text-center">
-          <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
-          <p className="text-gray-600">It seems the product you were looking for is no longer available.</p>
-          <Button onClick={() => navigate('/')} className="mt-4">
-            Go Back to Homepage
-          </Button>
-        </div>
-      </Container>
-    );
+  if (loading) {
+    return <Container>Loading product details...</Container>;
+  }
+
+  if (error) {
+    return <Container>Error loading product details: {error}</Container>;
+  }
+
+  if (!productDetails) {
+    return <Container>Product not found.</Container>;
   }
 
   const handleThumbnailClick = (image) => {
@@ -126,9 +149,9 @@ const ProductDetails = () => {
   const getDoorDeliveryDates = () => {
     const now = new Date();
     const startDate = new Date(now);
-    startDate.setDate(now.getDate() + 6); // Adding extra days for door delivery
+    startDate.setDate(now.getDate() + 6);
     const endDate = new Date(now);
-    endDate.setDate(now.getDate() + 8); // Adding extra days for door delivery
+    endDate.setDate(now.getDate() + 8);
     return `${formatDate(startDate)} and ${formatDate(endDate)}`;
   };
 
@@ -141,7 +164,7 @@ const ProductDetails = () => {
       case "Ogun State":
         return "3000";
       default:
-        return "₦3500"; // Default fee
+        return "₦3500";
     }
   };
 
@@ -170,7 +193,7 @@ const ProductDetails = () => {
           <div className="bg-gray-100 p-4 rounded-lg flex justify-center">
             <img
               src={mainImage}
-              alt={selectedProduct.name}
+              alt={productDetails.name}
               className="w-full max-w-md object-contain"
             />
           </div>
@@ -178,19 +201,19 @@ const ProductDetails = () => {
           {/* Right: Product Details */}
           <div className="w-1/2 ">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {selectedProduct.name}
+              {productDetails.name}
             </h2>
             <p className="text-orange-500 text-xl font-semibold">
-              ₦{parseFloat(selectedProduct.current_price).toLocaleString()}
+              ₦{parseFloat(productDetails.current_price).toLocaleString()}
             </p>
-            <p className="text-gray-600 my-3">{selectedProduct.description}</p>
+            <p className="text-gray-600 my-3">{productDetails.description}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-1">
               <FaStar className="text-yellow-500 text-xl mr-5" />
               <p className="text-gray-500">
                 <span className="text-black font-bold">
-                  {parseFloat(selectedProduct.average_rating).toFixed(1)}
+                  {parseFloat(productDetails.average_rating).toFixed(1)}
                 </span>
                 ({/* Assuming you have a review count */})
               </p>
@@ -231,9 +254,9 @@ const ProductDetails = () => {
         </div>
 
         {/* Thumbnail Images */}
-        {selectedProduct.extra_images && selectedProduct.extra_images.length > 0 && (
+        {productDetails.extra_images && productDetails.extra_images.length > 0 && (
           <div className="flex gap-4 mt-6">
-            {[selectedProduct.image, ...selectedProduct.extra_images].map((img, index) => (
+            {[productDetails.image, ...productDetails.extra_images].map((img, index) => (
               <div
                 key={index}
                 className={`w-24 h-24 rounded-md overflow-hidden cursor-pointer border ${
@@ -402,7 +425,7 @@ const ProductDetails = () => {
            based on categories. */}
       </div>
 
-      <Footer />
+      
     </Container>
   );
 };

@@ -28,12 +28,26 @@ import ProductPage from "./pages/Product.jsx";
 import Home from "./pages/Home.jsx";
 import Product from "./pages/productDetails.jsx";
 import { ProductProvider } from "./context/ProductContext.jsx";
-
+import { CartProvider } from "./context/CartContext.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx"; // Import AuthProvider
 
 
 function App() {
   return (
     <BrowserRouter>
+
+      <AuthProvider> {/* Wrap your app with AuthProvider */}
+        <ProductProvider>
+          <CartProvider>
+            <Routes>
+              {/* Public Authentication Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/resend-verification" element={<ResendVerification />} />
+
       <ProductProvider>
         <Routes>
           {/* Public Authentication Routes */}
@@ -43,48 +57,31 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/delivery" element={<DeliveryDetails />} />
-          <Route path="/payment-method" element={<PaymentMethod />} />
-       
+          <Route path="/payment-method" element={<PaymentMethod />} 
+          <Route path="/resend-verification" element={<ResendVerification />} /
 
          
-         {/* Layout component will be rendered for all the routes */}
-          <Route path="/" element={<Layout />}/>
-          {/* <Route path="/" element={<AddressForm />}/> */}
+              {/* Protected Routes within Layout */}
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} /> {/* Home page as index route */}
+                <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+                <Route path="/product/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
+                <Route path="/product-details/:productId" element={<Product />} />
+                {/* Add other protected routes here */}
+              </Route>
 
-       
-          
-          {/* Protected Routes */}
-          <Route element={<PrivateRoute />}>
-            {/* Add protected routes inside here */}
-              {/* <Route path="/address" element={<AddressForm />} /> */}
-          </Route>
-          {/* Public Routes */}
-          {/* e.g. <Route  index  element={<Home/>} />  for the homepage/landingpage*/}
-         
-          <Route path="/resend-verification" element={<ResendVerification />} />
+              {/* Redirect for the root path */}
+              <Route path="/" element={<Navigate to="/login" replace />} />
 
-
-          {/* Protected Routes within Layout */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} /> {/* Home page as index route */}
-            <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
-            <Route path="/product/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
-            <Route path="/product-details/:productId" element={<Product />} />
-            {/* Add other protected routes here */}
-          </Route>
-
-
-
-          {/* Redirect for the root path */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-
-          {/* 404 Page Not Found */}
-          <Route
-            path="*"
-            element={<div>Page not found: {window.location.pathname}</div>}
-          />
-        </Routes>
-      </ProductProvider>
+              {/* 404 Page Not Found */}
+              <Route
+                path="*"
+                element={<div>Page not found: {window.location.pathname}</div>}
+              />
+            </Routes>
+          </CartProvider>
+        </ProductProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -6,8 +6,7 @@ import Category from '../components/Category';
 import TodayDeal from '../components/TodayDeal';
 import { Container } from '../components/ui/container';
 import { useNavigate } from 'react-router-dom';
-import { addToCart } from '../services/api/cartService';
-import { productService } from '../services/api/productService';
+import { productService } from '../services/api/productService'; // Import productService
 
 const Home = () => {
   const navigate = useNavigate();
@@ -59,15 +58,16 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  
   const handleViewAllClick = () => {
     navigate('/product');
   };
 
-  // Remove the standalone handleAddToCart function since each Deals component has its own
-
   if (loading) {
-    return <div>Loading products...</div>;
+    return (
+      <div className="flex justify-center items-center h-48">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (error) {
@@ -84,16 +84,18 @@ const Home = () => {
     });
     return acc;
   }, {});
-  
   // Define the titles and the corresponding product lists to display
   const dealSections = [
     { title: 'Your Related Items...', products: products.sort(() => 0.5 - Math.random()).slice(0, 5) },
     { title: 'Televisons', products: productsByCategory['Tv'] || [] },
     { title: 'Laptops', products: productsByCategory['Laptop'] || [] },
-    { title: 'HeadPhones', products: productsByCategory['HeadPhones'] || [] },
+
+    { title: 'HeadPhones', products: productsByCategory['Headset'] || [] },
     { title: 'Accessories', products: productsByCategory['Accessories'] || [] },
     // Add more sections as needed
   ];
+
+  // const categoryKeys = Object.keys(productsByCategory);
 
   return (
     <div>
@@ -111,7 +113,7 @@ const Home = () => {
       ))}
 
       <Brands brandImageList={brandList} />
-      {dealSections.slice(1,5).map((section) => (
+      {dealSections.slice(2,5).map((section) => (
         <Deals
           key={section.title}
           dealName={section.title}

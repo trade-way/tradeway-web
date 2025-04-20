@@ -57,7 +57,9 @@ const DealCard = ({ onClick, productImage, productName, price, rating, productId
                 <Star key={`empty-${index}`} size={14} className="md:w-4 md:h-4 text-gray-300" />
               ))}
             </div>
-            <span className="text-gray-500 ml-1">({parseFloat(rating).toFixed(1)})</span>
+            {/* Format rating */}
+
+            
           </div>
         </div>
 
