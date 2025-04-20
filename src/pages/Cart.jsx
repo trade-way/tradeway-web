@@ -9,10 +9,14 @@ import { Container } from '@/components/ui/container';
 import { useCart } from '../context/CartContext'; // Import the hook
 
 const Cart = () => {
-  const { cartItems, loading, error } = useCart();
+  const { cartItems, loading, error} = useCart();
 
   if (loading) {
-    return <Container>Loading your cart...</Container>;
+    return (
+      <Container className="flex justify-center items-center h-screen"> {/* Center the spinner */}
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      </Container>
+    );
   }
 
   if (error) {

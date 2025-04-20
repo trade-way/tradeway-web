@@ -11,7 +11,7 @@ const API_ENDPOINTS = {
     forgotPassword: "auth/forgot-password",
     resetPassword: "auth/reset-password",
     logout: "auth/logout",
-    refreshToken: "auth/refresh",
+    refreshToken: "auth/refresh-token",
     me: "auth/me",
   },
   product: {
@@ -24,9 +24,9 @@ const API_ENDPOINTS = {
     delete: "products/:id",
   },
   cart: {
-    list: "products/carts",
-    create: "products/carts",
-    delete: "products/carts/:id"
+    list: "products/carts/",
+    create: "products/carts/",
+    delete: "products/carts/:id//"
   },
   category: {
     list: "products/categories",

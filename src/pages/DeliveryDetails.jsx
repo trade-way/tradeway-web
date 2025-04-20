@@ -1,37 +1,32 @@
-import React, { useState } from "react";
+// src/pages/DeliveryDetails.jsx
+import React, {  } from "react";
+import { useNavigate } from "react-router-dom";
 import {TransparentInput} from "../components/ui/transparentInput";
 import LogoHeader from "../components/ui/logoHeader";
 import InputWrapper from "../components/ui/InputWrapper";
 import {ArrowLeft} from "lucide-react";
+import { useCheckout } from "@/context/CheckoutContext"; // Import useCheckout
 
 const DeliveryDetails = () => {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    additionalInfo: "",
-    state: "",
-    city: "",
-    isDefault: false,
-  });
+  const navigate = useNavigate();
+  const { deliveryDetails, updateDeliveryDetails } = useCheckout(); // Use context
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    updateDeliveryDetails({
+      ...deliveryDetails,
       [name]: type === "checkbox" ? checked : value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    console.log("Delivery Details:", deliveryDetails);
+    navigate("/payment-method"); // Navigate to payment method
   };
 
   const handleCancel = () => {
-    setFormData({
+    updateDeliveryDetails({ // Reset form data in context
       firstName: "",
       lastName: "",
       email: "",
@@ -42,6 +37,7 @@ const DeliveryDetails = () => {
       city: "",
       isDefault: false,
     });
+    navigate(-1);
   };
 
   return (
@@ -52,10 +48,11 @@ const DeliveryDetails = () => {
         >
           <ArrowLeft/>
         </button>
-      <div className="w-screen p-6 mx-auto"> 
-       
+      <div className="w-screen p-6 mx-auto">
+
+
         <div className= "text-center mb-6">
-       
+
           <h1 className="text-2xl font-extrabold">Input Address</h1>
         </div>
 
@@ -69,7 +66,7 @@ const DeliveryDetails = () => {
                   id="firstName"
                   name="firstName"
                   type="text"
-                  value={formData.firstName}
+                  value={deliveryDetails.firstName}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -79,10 +76,10 @@ const DeliveryDetails = () => {
                   id="lastName"
                   name="lastName"
                   type="text"
-                  value={formData.lastName}
+                  value={deliveryDetails.lastName}
                   onChange={handleChange}
                   className="border-none h-full outline-none focus-within:ring-0 focus-within:border-transparent"
- 
+
                 />
               </InputWrapper>
             </div>
@@ -94,7 +91,7 @@ const DeliveryDetails = () => {
                   id="email"
                   name="email"
                   type="email"
-                  value={formData.email}
+                  value={deliveryDetails.email}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -104,7 +101,7 @@ const DeliveryDetails = () => {
                   id="telephone"
                   name="phone"
                   type="text"
-                  value={formData.phone}
+                  value={deliveryDetails.phone}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -118,7 +115,7 @@ const DeliveryDetails = () => {
                   id="address"
                   name="address"
                   type="text"
-                  value={formData.address}
+                  value={deliveryDetails.address}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -132,7 +129,7 @@ const DeliveryDetails = () => {
                   id="additionalInfo"
                   name="additionalInfo"
                   type="text"
-                  value={formData.additionalInfo}
+                  value={deliveryDetails.additionalInfo}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -146,7 +143,7 @@ const DeliveryDetails = () => {
                   id="state"
                   name="state"
                   type="text"
-                  value={formData.state}
+                  value={deliveryDetails.state}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:shadow-none focus:border-transparent"
                 />
@@ -156,7 +153,7 @@ const DeliveryDetails = () => {
                   id="city"
                   name="city"
                   type="text"
-                  value={formData.city}
+                  value={deliveryDetails.city}
                   onChange={handleChange}
                   className="border-none outline-none h-full focus:ring-0 focus:border-transparent"
                 />
@@ -171,7 +168,7 @@ const DeliveryDetails = () => {
                 type="checkbox"
                 name="isDefault"
                 className="text-blue-600 form-checkbox"
-                checked={formData.isDefault}
+                checked={deliveryDetails.isDefault}
                 onChange={handleChange}
               />
               <span>Set as Default Address</span>

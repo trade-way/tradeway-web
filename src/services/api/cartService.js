@@ -22,27 +22,21 @@ const getCartItems = async () => {
  * @returns {Promise} - Cart item creation response
  */
 const addToCart = async (productId, quantity = 1) => {
-// Use the correct path: products.cart.create instead of product.carts
-
-const addToCart = async (productId) => {
   try {
     const response = await api.post(API_ENDPOINTS.cart.create, {
       product: productId,
       quantity
     });
     
-    // Return a standardized response with the CartProduct data
+    // Check if the response is what you expect
     return {
-      ok: response.status === 201 || response.status === 200,
-      data: response.data,
-      status: response.status,
-      statusText: response.statusText
+      ok: true,
+      data: response,  // Modified: The axios interceptor already returns response.data
+      status: 200,
+      statusText: 'Success'
     };
-
   } catch (error) {
     console.error("Error adding to cart:", error);
-    
-    // Return a standardized error response
     return {
       ok: false,
       status: error.response?.status || 500,
@@ -51,7 +45,6 @@ const addToCart = async (productId) => {
     };
   }
 };
-
 /**
  * Remove an item from the cart
  * @param {string} cartItemId - Cart item ID to remove
@@ -74,10 +67,11 @@ const removeFromCart = async (cartItemId) => {
  * @param {number} quantity - New quantity
  * @returns {Promise} - Updated cart item
  */
+// src/services/api/cartService.js
 const updateCartItemQuantity = async (cartItemId, quantity) => {
   try {
-    const endpoint = API_ENDPOINTS.cart.list; // Assuming PATCH operates on the specific cart item
-    const response = await api.patch(`${endpoint}/${cartItemId}`, {
+    const endpoint = `${API_ENDPOINTS.cart.list}${cartItemId}/`; // Construct the correct URL
+    const response = await api.patch(endpoint, {
       quantity
     });
     return response.data;
