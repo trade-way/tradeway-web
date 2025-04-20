@@ -22,15 +22,33 @@ const getCartItems = async () => {
  * @returns {Promise} - Cart item creation response
  */
 const addToCart = async (productId, quantity = 1) => {
+// Use the correct path: products.cart.create instead of product.carts
+
+const addToCart = async (productId) => {
   try {
     const response = await api.post(API_ENDPOINTS.cart.create, {
       product: productId,
       quantity
     });
-    return response.data;
+    
+    // Return a standardized response with the CartProduct data
+    return {
+      ok: response.status === 201 || response.status === 200,
+      data: response.data,
+      status: response.status,
+      statusText: response.statusText
+    };
+
   } catch (error) {
     console.error("Error adding to cart:", error);
-    throw error;
+    
+    // Return a standardized error response
+    return {
+      ok: false,
+      status: error.response?.status || 500,
+      statusText: error.response?.statusText || 'Unknown error',
+      data: error.response?.data || null
+    };
   }
 };
 
