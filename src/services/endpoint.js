@@ -13,6 +13,7 @@ const API_ENDPOINTS = {
     logout: "auth/logout",
     refreshToken: "auth/refresh-token",
     me: "auth/me",
+    googleLogin: 'v1/auth/social_login/google', 
   },
   product: {
     list: "products",

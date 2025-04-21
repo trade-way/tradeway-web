@@ -9,10 +9,7 @@ import Signup from "@/pages/Signup.jsx";
 import ForgotPassword from "@/pages/ForgotPassword.jsx";
 import ResendVerification from "@/pages/ResendVerification.jsx";
 import ResetPassword from "@/pages/ResetPassword.jsx";
-import VerifyOtp from "@/pages/VerifyOtp.jsx";
-
-// UI Components
-import { Container } from "./components/ui/container.jsx";
+import VerifyOtp from "@/pages/VerifyOtp.jsx";   
 
 import Layout from "./Layout.jsx";
 import Cart from "./pages/Cart.jsx";
@@ -71,6 +68,7 @@ function App() {
         </ProductProvider>
       </AuthProvider>
     </BrowserRouter>
+
   );
 }
 

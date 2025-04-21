@@ -21,7 +21,7 @@ import authService from "@/services/api/authService";
 import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 // Uncomment this import if you plan to use Google authentication
-// import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
 function Login() {
   const navigate = useNavigate();
@@ -70,6 +70,7 @@ function Login() {
       } else {
         setError("Login successful, but tokens not received.");
       }
+
     } catch (err) {
       console.error("Login failed:", err);
       setError(
@@ -86,32 +87,15 @@ function Login() {
       setLoading(true);
       // Decode the Google credential
       const decodedToken = jwtDecode(credentialResponse.credential);
-
-      // Prepare Google login data
-      const googleLoginData = {
-        email: decodedToken.email,
-        name: decodedToken.name,
-        googleId: decodedToken.sub,
-      };
-
-      // Call backend Google authentication
-      // Uncomment the line below when your backend service is ready
-      // const response = await authService.googleLogin(googleLoginData);
-      console.log("Google Login successful:", googleLoginData);
-
-      // If your Google login returns tokens, update context and navigate
-      // Example (adjust based on your backend response):
-      // if (response?.tokens?.access_token && response?.tokens?.refresh_token) {
-      //   updateAuthTokens(response.tokens.access_token, response.tokens.refresh_token);
-      //   navigate("/");
-      // } else {
-      //   setError("Google Login successful, but tokens not received.");
-      // }
-      navigate("/"); // For now, just navigate after successful Google sign-in
+      console.log("response", credentialResponse);
+      await authService.googleLogin({
+        access_token: credentialResponse.credential,
+      });
+      navigate("/");
     } catch (err) {
-      console.error("Google Login failed:", err);
+      console.error("Google Signup failed:", err);
       setError(
-        err.response?.data?.message || "Google Login failed. Please try again."
+        err.response?.data?.message || "Google Signup failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -253,19 +237,31 @@ function Login() {
                   {loading ? "Logging in..." : "Login"}
                 </Button>
 
-                {/* Google Login Button - Uncomment when ready to use */}
-                {/*
-                <div className="w-full flex justify-center mt-4">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleFailure}
-                    type="standard"
-                    theme="filled_blue"
-                    size="large"
-                    text="signin_with"
-                  />
+                <div className="container">
+                  <div className="w-full flex justify-center mt-4">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={handleGoogleFailure}
+                      type="standard"
+                      theme="filled_blue"
+                      size="large"
+                      text="signin_with"
+                    />
+                  </div>
+                  <div className="w-full flex justify-center custom-overlay">
+                    <button
+                      className="flex items-center justify-center gap-3 bg-white py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      type="button"
+                    >
+                      <img
+                        src="/public/images/google.png"
+                        alt="Custom Google icon"
+                        className="w-5 h-5"
+                      />
+                      <span>Log in with Google</span>
+                    </button>
+                  </div>
                 </div>
-                */}
               </form>
             </Form>
 
