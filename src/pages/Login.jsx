@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// pages/Login.jsx
+import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 // Uncomment this import if you plan to use Google authentication
 import { GoogleLogin } from "@react-oauth/google";
@@ -25,6 +27,7 @@ function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { updateAuthTokens } = useContext(AuthContext); // Get updateAuthTokens from context
 
   const formSchema = z.object({
     email: z
@@ -57,8 +60,17 @@ function Login() {
       const response = await authService.login(values);
       console.log("Login successful:", response);
 
-      // Redirect to dashboard or home page after successful login
-      navigate("/");
+      if (response?.tokens?.access_token && response?.tokens?.refresh_token) {
+        // Update auth tokens in context and localStorage
+        updateAuthTokens(response.tokens.access_token, response.tokens.refresh_token);
+        console.log(
+          "Access and Refresh Tokens stored and context updated in Login"
+        );
+        navigate("/");
+      } else {
+        setError("Login successful, but tokens not received.");
+      }
+
     } catch (err) {
       console.error("Login failed:", err);
       setError(

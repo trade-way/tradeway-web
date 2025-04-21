@@ -1,44 +1,51 @@
-import { React, useState } from "react";
-import Laptop from "../assets/laptop.png";
+/* pages/ProductDetails.jsx */
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
-import { ShoppingCart } from "lucide-react";
-import { Share2 } from "lucide-react";
-import { Star } from "lucide-react";
-import { ChevronDown } from "lucide-react";
+import { ShoppingCart, Share2, Star, ChevronDown } from "lucide-react";
 import Delivery from "../assets/game-icons_card-pickup.png";
 import doorDelivery from "../assets/game-icons_card-pickup (1).png";
 import returnPolicy from "../assets/game-icons_card-pickup (2).png";
-import ProductOne from "../assets/61NI293PMXL.png";
-import ProductTwo from "../assets/71L2wXXLthL.png";
-import ProductThree from "../assets/71vZypjNkPS 1.png";
-import ProductFour from "../assets/81I1sw-FBgL.png";
-import { FaShoppingCart, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import Footer from "@/components/Footer";
+import { useProduct } from '../context/ProductContext'; // Import the hook
+import { productService } from '../services/api/productService'; // Import your product service
+import { useCart } from "@/context/CartContext"; // Import the CartContext hook
 
-const productImages = [ProductOne, ProductTwo, ProductThree, ProductFour];
+const StarRating = ({ rating }) => {
+  const filledStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+  const emptyStars = 5 - filledStars - (hasHalfStar ? 1 : 0);
 
-const StarRating = ({ rating, onRatingChange }) => {
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`w-6 h-6 cursor-pointer ${
-            star <= rating ? "fill-yellow-500 text-yellow-500" : "text-gray-400"
-          }`}
-          onClick={() => onRatingChange(star)}
-        />
-      ))}
-      <p className="text-gray-500 ml-2">({rating}/5)</p>
+    <div className="flex items-center gap-0.5 text-xs sm:text-sm">
+      <div className="flex text-amber-400">
+        {Array.from({ length: filledStars }).map((_, index) => (
+          <Star key={`filled-${index}`} size={14} className="md:w-4 md:h-4" />
+        ))}
+        {hasHalfStar && <Star key="half" size={14} className="md:w-4 md:h-4 fill-amber-400" />}
+        {Array.from({ length: emptyStars }).map((_, index) => (
+          <Star key={`empty-${index}`} size={14} className="md:w-4 md:h-4 text-gray-300" />
+        ))}
+      </div>
+      <span className="text-gray-500 ml-1">({parseFloat(rating).toFixed(1)})</span>
     </div>
   );
 };
 
-const Dropdown = ({ label, options }) => {
+const Dropdown = ({ label, options, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(options[0]);
+
+  const handleSelect = (option) => {
+    setSelected(option);
+    setIsOpen(false);
+    if (onSelect) {
+      onSelect(option);
+    }
+  };
 
   return (
     <div className="border rounded-lg p-3 bg-gray-50 shadow-sm w-full max-w-md">
@@ -57,10 +64,7 @@ const Dropdown = ({ label, options }) => {
             <li
               key={index}
               className="p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => {
-                setSelected(option);
-                setIsOpen(false);
-              }}
+              onClick={() => handleSelect(option)}
             >
               {option}
             </li>
@@ -71,60 +75,142 @@ const Dropdown = ({ label, options }) => {
   );
 };
 
-const Product = () => {
+const ProductDetails = () => {
+  const { productId } = useParams();
+  const { selectedProduct, setSelectedProduct } = useProduct(); // Get the setter as well
   const [activeTab, setActiveTab] = useState("description");
   const [quantity, setQuantity] = useState(1);
-  const [rating, setRating] = useState(0);
+  const [mainImage, setMainImage] = useState(null);
+  const [productDetails, setProductDetails] = useState(null); // State to hold fetched product details
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedState, setSelectedState] = useState("Lagos State");
+  const [selectedCity, setSelectedCity] = useState("Ijeshatedo Surulere");
+  const navigate = useNavigate();
+  const { addItemToCart } = useCart(); // Get the addItemToCart function from the context
 
-  const features = [
-    {
-      title: "Unmatched Noise Cancellation",
-      description:
-        "Advanced active noise cancellation (ANC) blocks out unwanted background noise.",
-    },
-    {
-      title: "High-Fidelity Audio",
-      description:
-        "Crisp highs, balanced mids, and deep bass for a rich sound experience.",
-    },
-    {
-      title: "Comfortable Fit",
-      description: "Soft ear cushions and lightweight build for extended wear.",
-    },
-    {
-      title: "Long Battery Life",
-      description: "Up to 24 hours of playtime on a single charge.",
-    },
-    {
-      title: "Fast Charging",
-      description: "15-minute charge provides 3 hours of playback.",
-    },
-    {
-      title: "Bluetooth 5.1",
-      description: "Stable wireless connectivity with low latency.",
-    },
-    {
-      title: "Aware Mode",
-      description:
-        " Instantly switch to transparency mode to hear your surroundings.",
-    },
-    {
-      title: "Crystal-Clear Calls",
-      description: "Advanced mic system for better voice clarity in calls.",
-    },
-  ];
+  useEffect(() => {
+    const fetchDetails = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await productService.getProductById(productId);
+        setProductDetails(response.data); // Assuming your API response has a 'data' property
+        setMainImage(response.data.image);
+      } catch (err) {
+        setError(err.message || "Failed to fetch product details");
+        console.error("Error fetching product details:", err);
+        // Optionally navigate back or show an error message
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // If we have the product in context and the ID matches, use it
+    if (selectedProduct && selectedProduct.id === productId) {
+      setProductDetails(selectedProduct);
+      setMainImage(selectedProduct.image);
+      setLoading(false);
+    } else {
+      // Otherwise, fetch from the API
+      fetchDetails();
+    }
+  }, [productId, selectedProduct, navigate]);
+
+  if (loading) {
+    return <Container>Loading product details...</Container>;
+  }
+
+  if (error) {
+    return <Container>Error loading product details: {error}</Container>;
+  }
+
+  if (!productDetails) {
+    return <Container>Product not found.</Container>;
+  }
+
+  const handleThumbnailClick = (image) => {
+    setMainImage(image);
+  };
+
+  const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+  };
+
+  const getPickupDates = () => {
+    const now = new Date();
+    const startDate = new Date(now);
+    startDate.setDate(now.getDate() + 4);
+    const endDate = new Date(now);
+    endDate.setDate(now.getDate() + 5);
+    return `${formatDate(startDate)} and ${formatDate(endDate)}`;
+  };
+
+  const getDoorDeliveryDates = () => {
+    const now = new Date();
+    const startDate = new Date(now);
+    startDate.setDate(now.getDate() + 6);
+    const endDate = new Date(now);
+    endDate.setDate(now.getDate() + 8);
+    return `${formatDate(startDate)} and ${formatDate(endDate)}`;
+  };
+
+  const getDeliveryFee = () => {
+    switch (selectedState) {
+      case "Lagos State":
+        return "₦2000";
+      case "Abuja":
+        return "₦4000";
+      case "Ogun State":
+        return "3000";
+      default:
+        return "₦3500";
+    }
+  };
+
+  const handleStateSelect = (state) => {
+    setSelectedState(state);
+    // Update city options based on the selected state if needed
+    if (state === "Lagos State") {
+      setSelectedCity("Ijeshatedo Surulere");
+    } else if (state === "Abuja") {
+      setSelectedCity("Abuja"); // Or any default Abuja city
+    } else if (state === "Ogun State") {
+      setSelectedCity("Abeokuta"); // Or any default Ogun city
+    }
+  };
+
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+  };
+
+  const handleAddToCart = async () => {
+    if (productDetails && productDetails.id) {
+      const result = await addItemToCart(productDetails.id, quantity);
+      if (result && result.ok) {
+        // Optionally show a success message or redirect to the cart
+        console.log("Item added to cart successfully!");
+        navigate('/cart'); // Example: Redirect to the cart page
+      } else {
+        // Handle error adding to cart
+        console.error("Failed to add item to cart:", result ? result.statusText : "Unknown error");
+        // Optionally show an error message to the user
+      }
+    }
+  };
 
   return (
     <Container>
-      <Navbar />
-      <div className="max-w-6x mx-auto p-8">
+      <div className="max-w-6xl mx-auto p-8">
         {/* Top Section */}
-        <div className="flex flex-col justify-around  lg:flex-row gap-10">
+        <div className="flex flex-col justify-around lg:flex-row gap-10">
           {/* Left: Product Image */}
           <div className="bg-gray-100 p-4 rounded-lg flex justify-center">
             <img
-              src={Laptop}
-              alt="Product"
+              src={mainImage}
+              alt={productDetails.name}
               className="w-full max-w-md object-contain"
             />
           </div>
@@ -132,21 +218,21 @@ const Product = () => {
           {/* Right: Product Details */}
           <div className="w-1/2 ">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Lorem ipsum dolor sit
+              {productDetails.name}
             </h2>
-            <p className="text-orange-500 text-xl font-semibold">₦103,000</p>
-            <p className="text-gray-600 my-3">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nisl
-              cursus tellus eget fringilla eget. Diam eu est id ut leo. Lorem
-              ipsum dolor sit amet, consectetur adipiscing elit. Nisl cursus
-              tellus eget fringilla eget. Diam eu est id ut leo.
+            <p className="text-orange-500 text-xl font-semibold">
+              ₦{parseFloat(productDetails.current_price).toLocaleString()}
             </p>
+            <p className="text-gray-600 my-3">{productDetails.description}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-1">
-              <FaStar className="text-yellow-500 text-xl mr-5"></FaStar>
+              <FaStar className="text-yellow-500 text-xl mr-5" />
               <p className="text-gray-500">
-                <span className="text-black font-bold">4,8</span>(1,873)
+                <span className="text-black font-bold">
+                  {parseFloat(productDetails.average_rating).toFixed(1)}
+                </span>
+                ({/* Assuming you have a review count */})
               </p>
             </div>
 
@@ -169,20 +255,40 @@ const Product = () => {
 
             {/* Buttons */}
             <div className="flex gap-4">
-              <button className="bg-blue-600 text-white  px-6 py-2 rounded-full">
+              <button className="bg-blue-600 text-white px-6 py-2 rounded-full">
                 Order Now
               </button>
-              <button className="flex items-center border border-blue-600 text-blue-600 px-4 py-2 rounded-full">
+              <button
+                className="flex items-center border border-blue-600 text-blue-600 px-4 py-2 rounded-full"
+                onClick={handleAddToCart} // Call handleAddToCart on click
+              >
                 <ShoppingCart className="mr-2" />
                 Add to Cart
               </button>
-              <button className="flex text-blue-600  py-2">
+              <button className="flex text-blue-600 py-2">
                 <Share2 className="mr-2" />
                 Share
               </button>
             </div>
           </div>
         </div>
+
+        {/* Thumbnail Images */}
+        {productDetails.extra_images && productDetails.extra_images.length > 0 && (
+          <div className="flex gap-4 mt-6">
+            {[productDetails.image, ...productDetails.extra_images].map((img, index) => (
+              <div
+                key={index}
+                className={`w-24 h-24 rounded-md overflow-hidden cursor-pointer border ${
+                  mainImage === img ? 'border-blue-500' : 'border-gray-300'
+                }`}
+                onClick={() => handleThumbnailClick(img)}
+              >
+                <img src={img} alt={`Thumbnail ${index + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="flex gap-6 mx-auto pt-3 my-7">
           {/* Left Section (Tabs & Content) */}
@@ -214,56 +320,34 @@ const Product = () => {
             </div>
 
             {/* Content Section */}
-            <div className="mt-6 ml-3">
+            <div className="mt-6 ml-3 w-[650px]">
               {activeTab === "description" && (
-                <div className="w-[650px]">
+                <div>
                   <h3 className="text-lg font-bold text-blue-600">
                     Brief Overview
                   </h3>
-                  <p className="text-gray-600 mb-5">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id
-                    neque mattis molestie eget phasellus tellus amet duis in.
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Id
-                    neque mattis molestie eget phasellus tellus amet duis in.
-                  </p>
-                  <StarRating rating={rating} onRatingChange={setRating} />
+                  <p className="text-gray-600 mb-5">{selectedProduct.description}</p>
+                  <StarRating rating={parseFloat(selectedProduct.average_rating || 0)} />
 
+                  {/* Display other relevant details from selectedProduct here */}
                   <h3 className="text-lg font-bold mt-7 mb-5 text-blue-600">
-                    Detailed Description
+                    Detailed Information
                   </h3>
-                  <div>
-                    {features.map((feature, index) => (
-                      <p
-                        key={index}
-                        className="mt-2 mb-10 text-[#353945] text-[17px]"
-                      >
-                        <strong className="font-semibold">
-                          {feature.title} –
-                        </strong>{" "}
-                        <span className="font-normal">
-                          {feature.description}
-                        </span>
-                      </p>
-                    ))}
-                  </div>
-
-                  <h3 className="text-lg font-semibold mt-4 text-blue-600 mb-10">
-                    Color Options
-                  </h3>
-                  <div className="flex gap-[27px] mt-2">
-                    <div className="w-[76px] h-[65px] bg-black "></div>
-                    <div className="w-[76px] h-[65px] bg-gray-400 "></div>
-                    <div className="w-[76px] h-[65px] bg-[#FF725E]"></div>
-                  </div>
+                  <p className="mt-2 mb-5 text-[#353945] text-[17px]">
+                    <strong>Color:</strong> <span className="font-normal">{selectedProduct.color}</span>
+                  </p>
+                  <p className="mt-2 mb-5 text-[#353945] text-[17px]">
+                    <strong>Size:</strong> <span className="font-normal">{selectedProduct.size}</span>
+                  </p>
+                  {/* Add more details as needed */}
                 </div>
               )}
 
               {activeTab === "reviews" && (
                 <div>
                   <h3 className="text-lg font-semibold">Customer Reviews</h3>
-                  <p className="text-gray-600">
-                    No reviews yet. Be the first to review this product!
-                  </p>
+                  {/* Implement review display logic here */}
+                  <p className="text-gray-600">No reviews yet.</p>
                 </div>
               )}
             </div>
@@ -291,143 +375,79 @@ const Product = () => {
                     className="mb-5"
                     label="State"
                     options={["Lagos State", "Ogun State", "Abuja"]}
+                    onSelect={handleStateSelect}
                   />
                   <Dropdown
                     label="City"
-                    options={["Ijeshatedo Surulere", "Ikeja", "Yaba"]}
+                    options={selectedState === "Lagos State" ? ["Ijeshatedo Surulere", "Ikeja", "Yaba"] : (selectedState === "Ogun State" ? ["Abeokuta", "Sagamu", "Ijebu-Ode"] : ["Abuja", "Garki", "Wuse"])}
+                    onSelect={handleCitySelect}
                   />
                 </section>
 
                 <div className="mt-6">
                   <div className="flex gap-x-3 mb-2">
-                    <img src={Delivery} />
+                    <img src={Delivery} alt="Delivery Icon" />
                     <div>
                       <p className="text-[16px]">Delivery and Returns</p>
                       <p className="text-[#6E7174] text-[14px]">
                         Delivery Fees{" "}
                         <span className="text-[#FF9900] font-bold">
-                          #103000
+                          {getDeliveryFee()}
                         </span>
                       </p>
                     </div>
                   </div>
 
                   <p>
-                    Ready for pickup between 26 March and 28 March if you place
-                    your order within the next 14mins
+                    Ready for pickup between {getPickupDates()} if you place
+                    your order within the next 14mins
                   </p>
                 </div>
 
                 <div className="mt-6">
                   <div className="flex gap-x-3 mb-2">
-                    <img src={doorDelivery} />
+                    <img src={doorDelivery} alt="Door Delivery Icon" />
                     <div>
                       <p className="text-[16px]">Door Delivery</p>
                       <p className="text-[#6E7174] text-[14px]">
                         Delivery Fees{" "}
                         <span className="text-[#FF9900] font-bold">
-                          #103000
+                          {getDeliveryFee()} + ₦1500
                         </span>
                       </p>
                     </div>
-                  </div>
+                    </div>
 
-                  <p>
-                    Ready for pickup between 26 March and 28 March if you place
-                    your order within the next 14mins
-                  </p>
-                </div>
-
-                <div className="mt-6">
-                  <div className="flex gap-x-3 mb-2">
-                    <img src={returnPolicy} />
-                    <div>
-                      <p>Return Policy</p>
-                      <p className="text-[#6E7174] text-[14px]">
-                        Free Delivery{" "}
-                        <span className="line-through text-[#6E7174]">
-                          #103000
-                        </span>{" "}
+                      <p>
+                        Expected delivery between {getDoorDeliveryDates()}
                       </p>
                     </div>
-                  </div>
 
-                  <p>
-                    Free return within 7 days for ALL eligible items Details
-                  </p>
+                    <div className="mt-6">
+                      <div className="flex gap-x-3 mb-2">
+                        <img src={returnPolicy} alt="Return Policy Icon" />
+                        <div>
+                          <p>Return Policy</p>
+                          <p className="text-[#6E7174] text-[14px]">
+                            Free return within 7 days for ALL eligible items Details
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Related Products Section */}
+            {/* You can implement a related products section here if needed,
+                potentially filtering from the initial product list or fetching
+                based on categories. */}
           </div>
-        </div>
 
-        {/* Delivery & Returns Section
-      <div className="bg-gray-100 p-6 rounded-lg mt-6">
-        <h3 className="text-lg font-semibold">Delivery & Returns</h3>
-        <p className="text-gray-600 text-sm">
-          <strong>Pickup Mode:</strong> Items arrive within 48 hours to your selected pickup station.
-        </p>
-      </div> */}
 
-        {/* Related Products Section */}
-        <div className="mt-10 p-5">
-          <h3 className="text-lg font-semibold">You May Also Like</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {productImages.map((image, index) => (
-              <div key={index} className=" p-4  relative">
-                {/* Product Image */}
-                <img
-                  src={image}
-                  alt="Product"
-                  className="w-full h-32 object-contain"
-                />
+        </Container>
+      );
+    };
 
-                {/* Product Details */}
-                <p className="text-gray-900 font-semibold mt-2">
-                  Lorem ipsum dolor sit amet
-                </p>
-                <p className="text-orange-500 font-bold mb-3">₦103,000</p>
-
-                {/* Star Rating Component */}
-                <StarRating />
-
-                {/* Cart Icon (Add to Cart) */}
-                <button className="absolute bottom-2 right-5 text-gray-600 hover:text-orange-500 border border-gray-500 p-3 rounded-full">
-                  <ShoppingCart size={20} />
-                </button>
-              </div>
-            ))}
-            {productImages.map((image, index) => (
-              <div key={index} className="p-4 relative">
-                {/* Product Image */}
-                <img
-                  src={image}
-                  alt="Product"
-                  className="w-full h-32 object-contain"
-                />
-
-                {/* Product Details */}
-                <p className="text-gray-900 font-semibold mt-2">
-                  Lorem ipsum dolor sit amet
-                </p>
-                <p className="text-orange-500 font-bold mb-3">₦103,000</p>
-
-                {/* Star Rating Component */}
-                <StarRating />
-
-                {/* Cart Icon (Add to Cart) */}
-                <button className="absolute bottom-2 right-5 text-gray-600 hover:text-orange-500 border border-gray-500 p-3 rounded-full">
-                  <ShoppingCart size={20} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <Footer />
-    </Container>
-  );
-};
-
-export default Product;
+    export default ProductDetails;

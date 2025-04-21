@@ -8,10 +8,11 @@ const authService = {
       credentials
     );
 
-    if (response.tokens && response.tokens.access_token) {
+    if (response.tokens?.access_token) { // Access tokens from response.tokens
+      console.log("access token:", response.tokens.a)
       localStorage.setItem("auth_token", response.tokens.access_token);
     }
-    if (response.tokens && response.tokens.refresh_token) {
+    if (response.tokens?.refresh_token) { // Access refresh tokens from response.tokens
       localStorage.setItem("refresh_token", response.tokens.refresh_token);
     }
 
@@ -53,11 +54,54 @@ const authService = {
     return response;
   },
 
-  logout: async () => {
-    await api.post(API_ENDPOINTS.authentication.logout);
-
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("refresh_token");
+   logout: async () => {
+    try {
+      // Get the current token - needed for authorization
+      const token = localStorage.getItem("auth_token");
+      
+      if (!token) {
+        // Already logged out, just clean up and redirect
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("refresh_token");
+        window.location.href = "/login";
+        return { success: true };
+      }
+      
+      // Try to call the logout endpoint
+      await api.post(
+        API_ENDPOINTS.authentication.logout, 
+        {},  // Empty request body
+        {}, // No URL params 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      // Always clear local tokens regardless of API response
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+      
+      // Redirect to login page
+      window.location.href = "/login";
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Logout failed:", error);
+      
+      // Even if server-side logout fails, we should still clear local storage
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("refresh_token");
+      
+      // Redirect to login anyway
+      window.location.href = "/login";
+      
+      return {
+        success: false,
+        error: error.message || "Logout failed"
+      };
+    }
   },
 
   // In your authService.js file

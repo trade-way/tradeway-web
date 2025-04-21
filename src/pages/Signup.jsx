@@ -54,30 +54,37 @@ function Signup() {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      agreeToTerms: false,
+      rememberMe: false,
+
     },
   });
 
   // Handle form submission
   async function onSubmit(values) {
+    // Log the submitted form values for debugging
+    console.log("Form Values:", values);
+
+    // Set loading state to true before making the API call
     setLoading(true);
     setError(null);
     try {
       // Remove confirmPassword as it's not needed for API call
       const { confirmPassword, ...signupData } = values;
 
-      const response = await authService.signup(signupData);
-      console.log("Signup successful:", response);
+    // Prepare the data to send to the backend
+    const signupData = {
+      name: values.name,
+      email: values.email,
+      account_type: "BUYER", // Keep this as per your logic
+      password: values.password,
+    };
 
-      // Redirect to login page after successful signup
-      navigate("/login");
-    } catch (err) {
-      console.error("Signup failed:", err);
-      setError(
-        err.response?.data?.message || "Signup failed. Please try again."
-      );
-    } finally {
+    console.log("Signup Request Payload:", signupData);
+
+    try {
+      const response = await authService.register(signupData);
+      setSuccessMessage(response.message || "Registration successful!");
+
       setLoading(false);
     }
   }
@@ -98,6 +105,7 @@ function Signup() {
       //   name: decodedToken.name,
       //   googleId: decodedToken.sub,
       // };
+
 
       // Call backend Google authentication signup
       // const response = await authService.googleSignup(googleSignupData);
@@ -133,9 +141,6 @@ function Signup() {
             alt="Company Logo"
             className="w-auto h-10"
           />
-          <span className="m-1 font-bold text-white text-lg font-poppins">
-            Logo
-          </span>
         </div>
 
         {/* Text in bottom left corner */}
