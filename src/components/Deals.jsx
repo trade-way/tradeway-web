@@ -4,7 +4,7 @@ import { useProduct } from '../context/ProductContext';
 import DealCard from "./ui/DealCard";
 import { useState } from 'react'; // Import useState
 
-const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
+const Deals = ({ dealName, dealList, onViewAllClick, displayStyle, scrollDirection }) => {
   const navigate = useNavigate();
   const { setSelectedProduct } = useProduct();
   const [notification, setNotification] = useState(null); // State for notification
@@ -17,16 +17,16 @@ const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
   const handleAddToCart = async (productId, productName) => {
     try {
       const response = await addToCart(productId);
-      
+
       if (response.ok) {
         console.log("product added to cart:", response.data)
         setNotification({ type: 'success', message: `${productName} added to cart!` });
         // Optional: Trigger a cart refresh here if needed
         // If you're using the CartContext you could call its fetchCart method
       } else {
-        setNotification({ 
-          type: 'error', 
-          message: `Failed to add to cart: ${response.statusText || 'Unknown error'}` 
+        setNotification({
+          type: 'error',
+          message: `Failed to add to cart: ${response.statusText || 'Unknown error'}`
         });
       }
     } catch (error) {
@@ -35,6 +35,15 @@ const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
     } finally {
       setTimeout(() => setNotification(null), 3000);
     }
+  };
+
+  const getGridClass = () => {
+    if (scrollDirection === "horizontal") {
+      return "grid grid-flow-col auto-cols-[minmax(200px,1fr)] sm:auto-cols-[minmax(220px,1fr)] md:auto-cols-[minmax(250px,1fr)] gap-3 md:gap-4 lg:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory";
+    } else if (scrollDirection === "vertical") {
+      return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 overflow-y-auto max-h-[600px] md:max-h-[800px] scrollbar-hide";
+    }
+    return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6"; // Default grid
   };
 
   return (
@@ -57,19 +66,21 @@ const Deals = ({ dealName, dealList, onViewAllClick, displayStyle }) => {
           </div>
         )}
 
-        <div className="grid grid-flow-col auto-cols-[minmax(200px,1fr)] sm:auto-cols-[minmax(220px,1fr)] md:auto-cols-[minmax(250px,1fr)] gap-3 md:gap-4 lg:gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+        <div className={getGridClass()}>
           {dealList && dealList.length > 0 ? (
             dealList.map((dealitem) => (
-              <div key={dealitem.id} className="snap-start">
+              <div key={dealitem.id} className="">
                 <DealCard
                   onClick={() => handleCardClick(dealitem)}
                   onAddToCart={handleAddToCart} // Pass the handleAddToCart function
                   productName={displayStyle !== "imagePriceOnly" ? dealitem.name : undefined}
+                
                   productImage={dealitem.image}
                   price={dealitem.current_price}
                   oldPrice={displayStyle !== "imagePriceOnly" ? dealitem.initial_price : undefined}
                   rating={displayStyle !== "imagePriceOnly" ? dealitem.average_rating : undefined}
                   showImageOnly={displayStyle === "imagePriceOnly"}
+                  showNameDescriptionOnly={displayStyle === "nameDescriptionOnly"} // New prop
                   productId={dealitem.id}
                 />
               </div>
