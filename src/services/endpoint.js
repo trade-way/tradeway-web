@@ -50,6 +50,9 @@ const API_ENDPOINTS = {
     create: "orders",
     cancel: "orders/:id/cancel",
   },
+  payment: {
+    checkout: "/payments/checkout", // New payment checkout endpoint
+  },
 };
 
 // List of public endpoints that don't require authentication
@@ -66,6 +69,7 @@ const PUBLIC_ENDPOINTS = [
   API_ENDPOINTS.product.details,
   API_ENDPOINTS.category.details,
   API_ENDPOINTS.category.list,
+  API_ENDPOINTS.payment.checkout,
 ];
 
 export { API_ENDPOINTS, PUBLIC_ENDPOINTS };
