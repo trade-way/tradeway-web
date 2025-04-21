@@ -42,11 +42,10 @@ const OrderPage = () => {
   };
 
   const getDeliveryFee = () => {
-    const baseFee = getBaseDeliveryFee();
-    if (deliveryOption === "delivery") {
-      return baseFee + 1500;
+    if (deliveryOption === "pickup") {
+      return 0;
     } else {
-      return baseFee;
+      return getBaseDeliveryFee() + 1500;
     }
   };
 
@@ -93,18 +92,18 @@ const OrderPage = () => {
                   <SelectValue placeholder="Select an option" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="delivery">Delivery (+₦1500)</SelectItem>
+                  <SelectItem value="delivery">Delivery</SelectItem>
                   <SelectItem value="pickup">Pickup</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {deliveryDetails && (
+            {deliveryOption === "delivery" && deliveryDetails && (
               <div className="mt-4">
-                <h3 className="font-semibold">Delivery Details:</h3>
-                <p>Name: {deliveryDetails.firstName} {deliveryDetails.lastName}</p>
-                <p>Address: {deliveryDetails.address}</p>
-                <p>City, State: {deliveryDetails.city}, {deliveryDetails.state}</p>
+                <h3 className="font-semibold">Delivery To:</h3>
+                <p>{deliveryDetails.firstName} {deliveryDetails.lastName}</p>
+                <p>{deliveryDetails.address}</p>
+                <p>{deliveryDetails.city}, {deliveryDetails.state}</p>
                 <p>Phone: {deliveryDetails.phone}</p>
                 <p>Email: {deliveryDetails.email}</p>
                 {deliveryDetails.additionalInfo && <p>Additional Info: {deliveryDetails.additionalInfo}</p>}
