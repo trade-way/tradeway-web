@@ -10,6 +10,7 @@ export const CartProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [total, setTotal] = useState(0); // State for the total
 
   useEffect(() => {
     // Check for the auth token in localStorage on component mount and when it changes
@@ -17,8 +18,7 @@ export const CartProvider = ({ children }) => {
     setIsAuthenticated(!!token);
   }, [localStorage.getItem('auth_token')]); // Re-run effect when the token in localStorage changes
 
- // In your CartContext.jsx
-const fetchCart = async () => {
+  const fetchCart = async () => {
     if (isAuthenticated) {
       setLoading(true);
       setError(null);
@@ -46,6 +46,14 @@ const fetchCart = async () => {
     fetchCart();
   }, [isAuthenticated]); // Refetch cart when authentication status changes
 
+  // Calculate total whenever cartItems change
+  useEffect(() => {
+    const newTotal = cartItems.reduce((acc, item) => {
+      return acc + (parseFloat(item.product?.current_price || 0) * item.quantity);
+    }, 0);
+    setTotal(newTotal);
+  }, [cartItems]);
+
   const addItemToCart = async (productId, quantity = 1) => {
     try {
       const result = await addToCart(productId, quantity);
@@ -69,13 +77,12 @@ const fetchCart = async () => {
     }
   };
 
-
   const changeQuantity = (itemId, quantity) => {
     // Directly update the local state
     setCartItems(currentItems =>
       currentItems.map(item => (item.id === itemId ? { ...item, quantity: quantity } : item))
     );
-    // No API call here
+    // The useEffect above will recalculate the total
   };
 
   const removeItem = async (itemId) => {
@@ -94,6 +101,7 @@ const fetchCart = async () => {
     cartItems,
     loading,
     error,
+    total, // Include total in the context value
     updateQuantity: changeQuantity,
     removeItem,
     addItemToCart,
@@ -107,4 +115,4 @@ const fetchCart = async () => {
   );
 };
 
-export { CartContext, };
+export { CartContext };

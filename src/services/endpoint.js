@@ -22,6 +22,7 @@ const API_ENDPOINTS = {
     update: "products/:id",
     patch: "products/:id",
     delete: "products/:id",
+    ordersList: "products/orders"
   },
   cart: {
     list: "products/carts/",
