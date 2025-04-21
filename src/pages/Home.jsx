@@ -74,54 +74,26 @@ const Home = () => {
     return <div>Error: {error}</div>;
   }
 
-  // Group products by category
-  const productsByCategory = products.reduce((acc, product) => {
-    product.categories.forEach(category => {
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(product);
-    });
-    return acc;
-  }, {});
-  // Define the titles and the corresponding product lists to display
-  const dealSections = [
-    { title: 'Your Related Items...', products: products.sort(() => 0.5 - Math.random()).slice(0, 5) },
-    { title: 'Televisons', products: productsByCategory['Tv'] || [] },
-    { title: 'Laptops', products: productsByCategory['Laptop'] || [] },
-
-    { title: 'HeadPhones', products: productsByCategory['Headset'] || [] },
-    { title: 'Accessories', products: productsByCategory['Accessories'] || [] },
-    // Add more sections as needed
-  ];
-
-  // const categoryKeys = Object.keys(productsByCategory);
-
   return (
     <div>
       <Hero />
       <Category categoryItem={categoryItem} />
-      <TodayDeal Todayitems={deals} />
-      {dealSections.slice(0,1).map((section) => (
-        <Deals
-          key={section.title}
-          dealName={section.title}
-          dealList={section.products}
-          onViewAllClick={handleViewAllClick}
-          displayStyle="imagePriceOnly"
-        />
-      ))}
-
-      <Brands brandImageList={brandList} />
-      {dealSections.slice(2,5).map((section) => (
-        <Deals
-          key={section.title}
-          dealName={section.title}
-          dealList={section.products}
-          onViewAllClick={handleViewAllClick}
-          displayStyle="imagePriceOnly"
-        />
-      ))}
+      {/* <TodayDeal Todayitems={deals} /> */}
+      <Deals
+        dealName="Your Related Items..."
+        dealList={products.sort(() => 0.5 - Math.random()).slice(0, 5)}
+        onViewAllClick={handleViewAllClick}
+        displayStyle="nameDescriptionOnly" // Changed displayStyle
+        scrollDirection="horizontal" // Added scrollDirection
+      />
+      <Deals
+        dealName="All Products"
+        dealList={products}
+        onViewAllClick={handleViewAllClick}
+        displayStyle="nameDescriptionOnly" // Changed displayStyle
+        scrollDirection="vertical" // Added scrollDirection
+      />
+      
     </div>
   );
 };
