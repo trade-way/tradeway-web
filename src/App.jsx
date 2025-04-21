@@ -26,6 +26,7 @@ import { ProductProvider } from "./context/ProductContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx"; // Import AuthProvider
 import { CheckoutProvider } from "./context/CheckoutContext.jsx"; // Import CheckoutProvider
+import OrderPage from "./pages/OrderPage.jsx";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                   <Route index element={<Home />} /> {/* Home page as index route */}
                   <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
                   <Route path="/product/:product" element={<PrivateRoute><ProductPage /></PrivateRoute>} />
+                  <Route path="/orders" element={<PrivateRoute><OrderPage /></PrivateRoute>} />
                   <Route path="/product-details/:productId" element={<Product />} />
                   {/* Add other protected routes here */}
                 </Route>
