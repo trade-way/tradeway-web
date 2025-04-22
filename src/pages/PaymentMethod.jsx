@@ -1,9 +1,9 @@
 // src/pages/PaymentMethod.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import visa from "@/assets/visa.png";
-import mastercard from "@/assets/mastercard.png";
-import paypal from "@/assets/paypal.png";
+import visa from "@/assets/Visa.png";
+import mastercard from "@/assets/Mastercard.png";
+import paypal from "@/assets/Paypal.png";
 import applePay from "@/assets/apple-pay.png";
 import googlePay from "@/assets/google-pay.png";
 import CardFormModal from "../components/modals/CardFormModal";

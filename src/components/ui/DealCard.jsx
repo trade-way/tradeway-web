@@ -1,7 +1,7 @@
 import { ShoppingCart, Star } from "lucide-react";
 import { addToCart as addToCartService } from "../../services/api/cartService";
 
-const DealCard = ({ onClick, productImage, productName, price, rating, productId, onAddToCart, productDescription, showNameDescriptionOnly }) => {
+const DealCard = ({ onClick, productImage, productName, price, rating, productId, onAddToCart, productDescription }) => {
   const handleAddToCartClick = async (event) => {
     event.stopPropagation();
 

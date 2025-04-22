@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import logo from "@/assets/logo.png"
+import google from "@/assets/google.png"
+
+// import { jwtDecode } from "jwt-decode";
 import {
   Form,
   FormControl,
@@ -17,12 +20,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
-import { useGoogleLogin, GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
 function Signup() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null); // State for success message
 
   // Form validation schema
   const formSchema = z
@@ -54,8 +58,8 @@ function Signup() {
       name: "",
       email: "",
       password: "",
-      rememberMe: false,
-
+      confirmPassword: "", // Initialize confirmPassword
+      agreeToTerms: false, // Initialize agreeToTerms
     },
   });
 
@@ -67,24 +71,30 @@ function Signup() {
     // Set loading state to true before making the API call
     setLoading(true);
     setError(null);
-    try {
-      // Remove confirmPassword as it's not needed for API call
-      const { confirmPassword, ...signupData } = values;
-
-    // Prepare the data to send to the backend
-    const signupData = {
-      name: values.name,
-      email: values.email,
-      account_type: "BUYER", // Keep this as per your logic
-      password: values.password,
-    };
-
-    console.log("Signup Request Payload:", signupData);
+    setSuccessMessage(null); // Clear any previous success message
 
     try {
+      // Prepare the data to send to the backend
+      const signupData = {
+        name: values.name,
+        email: values.email,
+        account_type: "BUYER", // Keep this as per your logic
+        password: values.password,
+      };
+
+      console.log("Signup Request Payload:", signupData);
+
       const response = await authService.register(signupData);
-      setSuccessMessage(response.message || "Registration successful!");
-
+      setSuccessMessage(response?.message || "Registration successful!");
+      form.reset(); // Reset the form on successful signup
+      // Optionally navigate the user after a short delay
+      setTimeout(() => {
+        navigate("/login"); // Or wherever you want to redirect
+      }, 1500);
+    } catch (err) {
+      console.error("Signup failed:", err);
+      setError(err.response?.data?.message || "Signup failed. Please try again.");
+    } finally {
       setLoading(false);
     }
   }
@@ -93,23 +103,19 @@ function Signup() {
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setLoading(true);
+      setError(null);
+      setSuccessMessage(null);
+
       // Decode the Google credential
-      const decodedToken = jwtDecode(credentialResponse.credential);
-      console.log("response", credentialResponse);
-      await authService.googleLogin({
+      // const decodedToken = jwtDecode(credentialResponse.credential);
+      console.log("Google Credential Response:", credentialResponse);
+
+      const response = await authService.googleLogin({
         access_token: credentialResponse.credential,
       });
-      // Prepare Google signup data
-      // const googleSignupData = {
-      //   email: decodedToken.email,
-      //   name: decodedToken.name,
-      //   googleId: decodedToken.sub,
-      // };
 
-
-      // Call backend Google authentication signup
-      // const response = await authService.googleSignup(googleSignupData);
-      // console.log("Google Signup successful:", googleSignupData);
+      console.log("Google Login Response:", response);
+      localStorage.setItem("token", response.token); // Assuming your backend returns a token
       navigate("/");
     } catch (err) {
       console.error("Google Signup failed:", err);
@@ -131,13 +137,13 @@ function Signup() {
     <div className="min-h-screen flex">
       {/* Left Side - Static Image Section */}
       <div
-        className="hidden lg:block lg:w-2/5 bg-cover bg-center bg-no-repeat fixed left-0 top-0 h-full"
-        style={{ backgroundImage: "url(/src/assets/image_2.png)" }}
+        className="bg-[url(/src/assets/image_2.png)] hidden lg:block lg:w-2/5 bg-cover bg-center bg-no-repeat fixed left-0 top-0 h-full"
+       
       >
         {/* Logo in top left corner */}
         <div className="absolute top-8 left-8 flex items-center">
           <img
-            src="/src/assets/logo.png"
+            src={logo}
             alt="Company Logo"
             className="w-auto h-10"
           />
@@ -165,6 +171,13 @@ function Signup() {
           {error && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-center">
               {error}
+            </div>
+          )}
+
+          {/* Success Message */}
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md text-center">
+              {successMessage}
             </div>
           )}
 
@@ -261,6 +274,7 @@ function Signup() {
                         </Link> */}
                       </FormLabel>
                     </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -291,31 +305,29 @@ function Signup() {
                 Sign up quickly with your Google account
               </p>
             </div>
-            <div className="container">
-              <div className="w-full flex justify-center mt-4">
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={handleGoogleFailure}
-                  type="standard"
-                  theme="filled_blue"
-                  size="large"
-                  text="signin_with"
-                />
-              </div>
-              <div className="w-full flex justify-center custom-overlay">
-                <button
-                  className="flex items-center justify-center gap-3 py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                  type="button"
-                >
-                  <img
-                    src="/public/images/google.png"
-                    alt="Custom Google icon"
-                    className="w-5 h-5"
-                  />
-                  <span>Continue with Google</span>
-                </button>
-              </div>
+            <div className="w-full flex justify-center mt-4">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleFailure}
+                type="standard"
+                theme="filled_blue"
+                size="large"
+                text="signin_with"
+              />
             </div>
+            {/* <div className="w-full flex justify-center custom-overlay">
+              <button
+                className="flex items-center justify-center gap-3 py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                type="button"
+              >
+                <img
+                  src="/public/images/google.png"
+                  alt="Custom Google icon"
+                  className="w-5 h-5"
+                />
+                <span>Continue with Google</span>
+              </button>
+            </div> */}
           </div>
 
           {/* <div className="w-full flex justify-center">

@@ -35,7 +35,7 @@ const StarRating = ({ rating }) => {
   );
 };
 
-const Dropdown = ({ label, options, onSelect }) => {
+const Dropdown = ({ options, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(options[0]);
 
@@ -77,7 +77,7 @@ const Dropdown = ({ label, options, onSelect }) => {
 
 const ProductDetails = () => {
   const { productId } = useParams();
-  const { selectedProduct, setSelectedProduct } = useProduct(); // Get the setter as well
+  const { selectedProduct } = useProduct(); // Get the setter as well
   const [activeTab, setActiveTab] = useState("description");
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(null);
@@ -85,7 +85,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedState, setSelectedState] = useState("Lagos State");
-  const [selectedCity, setSelectedCity] = useState("Ijeshatedo Surulere");
+  const [ setSelectedCity] = useState("Ijeshatedo Surulere");
   const navigate = useNavigate();
   const { addItemToCart } = useCart(); // Get the addItemToCart function from the context
 

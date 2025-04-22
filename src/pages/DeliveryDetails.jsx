@@ -3,7 +3,7 @@ import React, { } from "react";
 import { useNavigate } from "react-router-dom";
 import { TransparentInput } from "../components/ui/transparentInput";
 import LogoHeader from "../components/ui/logoHeader";
-import InputWrapper from "../components/ui/InputWrapper";
+import InputWrapper from "../components/ui/inputWrapper";
 import { ArrowLeft } from "lucide-react";
 import { useCheckout } from "../context/CheckoutContext"; // Import useCheckout
 import {
@@ -152,7 +152,7 @@ const DeliveryDetails = () => {
 
               {/* Row 5 */}
               <div className="grid grid-cols-2 gap-[20px] col-span-2">
-              <InputWrapper label="State">
+                <InputWrapper label="State">
                   <Select value={deliveryDetails.state} onValueChange={handleStateChange}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a state" />
@@ -198,7 +198,7 @@ const DeliveryDetails = () => {
           <div className="flex justify-center mt-6 space-x-4">
             <button
               type="button"
-              className="px-[30px] py-[7px] text-[#9c9c9c] font-bold text  border-[#c1c3ca] border-[2px] rounded-md bg-transparent hover:bg-gray-100 active:bg-transparent"
+              className="px-[30px] py-[7px] text-[#9c9c9c] font-bold text  border-[#c1c3ca] border-[2px] rounded-md bg-transparent hover:bg-gray-100 active:bg-transparent"
               onClick={handleCancel}
             >
               Cancel

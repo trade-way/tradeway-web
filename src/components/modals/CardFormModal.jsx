@@ -1,8 +1,8 @@
 import React from "react";
 import { Input } from "../ui/input";
-import visa from "@/assets/visa.png";
-import mastercard from "@/assets/mastercard.png";
-import paypal from "@/assets/paypal.png";
+import visa from "@/assets/Visa.png";
+import mastercard from "@/assets/Mastercard.png";
+import paypal from "@/assets/Paypal.png";
 import applePay from "@/assets/apple-pay.png";
 import googlePay from "@/assets/google-pay.png";
 

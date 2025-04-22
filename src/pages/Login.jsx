@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import authService from "@/services/api/authService";
 import { AuthContext } from "../context/AuthContext"; // Import AuthContext
+import logo from "@/assets/logo.png"
+import google from "@/assets/google.png"
 
 // Uncomment this import if you plan to use Google authentication
 import { GoogleLogin } from "@react-oauth/google";
@@ -121,13 +123,11 @@ function Login() {
             {/* Logo in top right corner */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 lg:top-8 lg:right-8 z-10 flex items-center">
               <img
-                src="/src/assets/logo.png"
+                src={logo}
                 alt="Company Logo"
                 className="w-auto h-8 sm:h-10 lg:h-10"
               />
-              <span className="m-1 md:text-base font-bold text-white lg:text-lg font-poppins">
-                Logo
-              </span>
+             
             </div>
 
             {/* New text in bottom left corner */}
@@ -236,9 +236,8 @@ function Login() {
                 >
                   {loading ? "Logging in..." : "Login"}
                 </Button>
-
-                <div className="container">
-                  <div className="w-full flex justify-center mt-4">
+                <div className="container w-full">
+                  <div className="w-full flex justify-center  mt-4">
                     <GoogleLogin
                       onSuccess={handleGoogleSuccess}
                       onError={handleGoogleFailure}
@@ -250,11 +249,11 @@ function Login() {
                   </div>
                   <div className="w-full flex justify-center custom-overlay">
                     <button
-                      className="flex items-center justify-center gap-3 bg-white py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                      className="flex items-center justify-center mr-11 pl-25 w-full gap-3 bg-white py-2 px-30 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                       type="button"
                     >
                       <img
-                        src="/public/images/google.png"
+                        src={google}
                         alt="Custom Google icon"
                         className="w-5 h-5"
                       />

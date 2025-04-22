@@ -28,7 +28,7 @@ const API_ENDPOINTS = {
   cart: {
     list: "products/carts/",
     create: "products/carts/",
-    delete: "products/carts/:id//"
+    delete: "products/carts/:id/"
   },
   category: {
     list: "products/categories",
